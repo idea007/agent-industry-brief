@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
 } from "react";
 import CustomSourcesDialog, {
   sourceTypeLabel,
@@ -1068,6 +1069,7 @@ export default function RadarDashboard() {
 
   function selectIndustry(subscriptionId: string) {
     if (runTarget?.id === subscriptionId) return;
+    window.scrollTo({ top: 0, behavior: "instant" });
     industryRequestRef.current += 1;
     runDocumentsRequestRef.current += 1;
     setRunDocuments([]);
@@ -1406,146 +1408,125 @@ export default function RadarDashboard() {
   }
 
   return (
-    <main className="radar-app">
-      <header className="app-header">
-        <div className="header-inner">
-          <a className="brand-lockup" href="#top" aria-label="新闻简报首页">
-            <span className="radar-mark" aria-hidden="true">
-              <i />
-            </span>
-            <span>
-              <strong>新闻简报</strong>
-              <small>INDUSTRY BRIEF</small>
-            </span>
-          </a>
+    <div className="radar-app">
+      <aside className="radar-sidebar" aria-label="简报导航">
+        <a className="brand-lockup" href="#top" aria-label="新闻简报首页">
+          <span className="radar-mark" aria-hidden="true">
+            <i />
+          </span>
+          <span>
+            <strong>新闻简报</strong>
+            <small>INDUSTRY BRIEF</small>
+          </span>
+        </a>
 
-          <div className="header-spacer" />
+        <div className="sidebar-scan">
+          <button
+            type="button"
+            className="primary-button scan-button"
+            data-testid="run-radar"
+            title={
+              targetBusy
+                ? `${runTarget?.name ?? "当前关注"}已有扫描${targetActiveRun?.status === "queued" ? "排队中" : "运行中"}`
+                : `${nextRunWillQueue ? "加入队列" : "立即扫描"}：${runTarget?.name ?? "未选择"}`
+            }
+            onClick={() => void triggerRun()}
+            disabled={targetBusy || !runTarget}
+          >
+            {(targetStarting || targetActiveRun?.status === "running") && (
+              <span className="scan-spinner" aria-hidden="true" />
+            )}
+            {scanButtonLabel}
+          </button>
+          <span className="scan-status" role="status">
+            <i
+              className={activeRuns.length || targetStarting ? "running" : connected ? "online" : ""}
+              aria-hidden="true"
+            />
+            {scanStatusText}
+          </span>
+        </div>
 
-          <div className="header-actions">
-            <span className="scan-status">
-              <i
-                className={activeRuns.length || targetStarting ? "running" : connected ? "online" : ""}
-              />
-              {scanStatusText}
-            </span>
+        <nav className="industry-nav" aria-label="关注领域">
+          <div className="industry-nav-heading">
+            <h2>关注</h2>
             <button
               type="button"
-              className="ghost-button agent-entry"
-              onClick={() => setTraceOpen(true)}
-            >
-              <span className="desktop-action-label">运行信息</span>
-              <span className="mobile-action-label">详情</span>
-              {data.stats.pending_approval_count > 0 && (
-                <i aria-label={`${data.stats.pending_approval_count} 个待审批`} />
-              )}
-            </button>
-            <button
-              type="button"
-              className="ghost-button change-industry"
+              className="manage-following"
               onClick={() => setOnboardingOpen(true)}
+              aria-label="管理关注"
             >
               更换关注
             </button>
-            <button
-              type="button"
-              className="primary-button scan-button"
-              data-testid="run-radar"
-              title={
-                targetBusy
-                  ? `${runTarget?.name ?? "当前关注"}已有扫描${targetActiveRun?.status === "queued" ? "排队中" : "运行中"}`
-                  : `${nextRunWillQueue ? "加入队列" : "立即扫描"}：${runTarget?.name ?? "未选择"}`
-              }
-              onClick={() => void triggerRun()}
-              disabled={targetBusy || !runTarget}
-            >
-              {(targetStarting || targetActiveRun?.status === "running") && (
-                <span className="scan-spinner" aria-hidden="true" />
-              )}
-              <span className="scan-action-label">
-                {scanButtonLabel}
-              </span>
-            </button>
           </div>
-        </div>
-      </header>
+          <div className="industry-list">
+            {followedSubscriptions.map((subscription) => {
+              const activeRun = activeRunBySubscription.get(subscription.id);
+              return (
+                <button
+                  type="button"
+                  className={`industry-option${activeRun ? " has-active-run" : ""}`}
+                  aria-pressed={runTarget?.id === subscription.id}
+                  onClick={() => selectIndustry(subscription.id)}
+                  key={subscription.id}
+                  style={{ "--industry-accent": subscription.accent } as CSSProperties}
+                  title={`查看 ${subscription.name} 动态并设为扫描目标${
+                    activeRun
+                      ? `，当前${activeRun.status === "queued" ? "排队中" : "扫描中"}`
+                      : ""
+                  }`}
+                >
+                  <i aria-hidden="true" />
+                  <span className="industry-name">{subscription.name}</span>
+                  {activeRun && (
+                    <span className={`industry-run-state ${activeRun.status}`}>
+                      {activeRun.status === "queued" ? "排队" : "扫描中"}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
-      <nav className="industry-bar" aria-label="关注领域">
-        <div className="industry-bar-inner">
-          <span className="industry-label">关注</span>
-          <i className="bar-divider" aria-hidden="true" />
+        <div className="sidebar-actions">
           <button
             type="button"
-            className="mobile-industry-settings"
-            onClick={() => setOnboardingOpen(true)}
-            aria-label="管理关注"
-          >
-            <span aria-hidden="true">＋</span>
-            管理
-          </button>
-          {followedSubscriptions.map((subscription) => {
-            const activeRun = activeRunBySubscription.get(subscription.id);
-            return (
-              <button
-              type="button"
-              className={`${
-                runTarget?.id === subscription.id ? "scan-target" : ""
-              }${activeRun ? ` has-active-run ${activeRun.status}` : ""}`}
-              aria-pressed={runTarget?.id === subscription.id}
-              onClick={() => selectIndustry(subscription.id)}
-              key={subscription.id}
-              style={{
-                color: subscription.accent,
-                borderColor: `${subscription.accent}35`,
-                background: `${subscription.accent}15`,
-              }}
-              title={`查看 ${subscription.name} 动态并设为扫描目标${
-                activeRun
-                  ? `，当前${activeRun.status === "queued" ? "排队中" : "扫描中"}`
-                  : ""
-              }`}
-            >
-              <i style={{ background: subscription.accent }} />
-              {subscription.name}
-              {activeRun && (
-                <span className={`industry-run-state ${activeRun.status}`}>
-                  {activeRun.status === "queued" ? "排队" : "扫描中"}
-                </span>
-              )}
-            </button>
-            );
-          })}
-          <i className="bar-divider" aria-hidden="true" />
-          <button
-            type="button"
-            className={`custom-source-button${
-              targetCustomSources.length ? " has-sources" : ""
-            }`}
+            className="ghost-button source-strategy-button"
             onClick={() => setSourcesOpen(true)}
           >
-            <span aria-hidden="true">◎</span>
-            {activeSourceProfile
-              ? `${activeSourceProfile.sources.length} 定向源 · ${
-                  sourceProfileSearchCount(activeSourceProfile)
-                } 组检索`
-              : "来源策略"}
-            {targetCustomSources.length > 0 &&
-              ` +${targetCustomSources.length}`}
+            <span>来源策略</span>
+            {(activeSourceProfile || targetCustomSources.length > 0) && (
+              <small>
+                {activeSourceProfile &&
+                  `${activeSourceProfile.sources.length} 个定向源 · ${sourceProfileSearchCount(activeSourceProfile)} 组检索`}
+                {targetCustomSources.length > 0 &&
+                  `${activeSourceProfile ? " · " : ""}${targetCustomSources.length} 个自定义来源`}
+              </small>
+            )}
+          </button>
+          <button
+            type="button"
+            className="ghost-button agent-entry"
+            onClick={() => setTraceOpen(true)}
+          >
+            运行信息
+            {data.stats.pending_approval_count > 0 && (
+              <i aria-label={`${data.stats.pending_approval_count} 个待审批`} />
+            )}
           </button>
         </div>
-      </nav>
+      </aside>
 
-      <section className="radar-content" id="top">
-        <p
-          className="result-summary"
-          aria-live="polite"
-          aria-busy={loading || industryLoading}
-        >
-          <strong>{runTarget?.name ?? "当前关注"}</strong>
-          <span aria-hidden="true">·</span>
-          {loading || industryLoading
-            ? "正在更新内容"
-            : `${baseArticles.length} 条结果`}
-        </p>
+      <main className="radar-content" id="top">
+        <header className="result-summary">
+          <h1>{runTarget?.name ?? "当前关注"}</h1>
+          <span role="status" aria-busy={loading || industryLoading}>
+            {loading || industryLoading
+              ? "正在更新内容"
+              : `${baseArticles.length} 条结果`}
+          </span>
+        </header>
 
         {scanFunnel && (
           <div className="scan-overview">
@@ -1740,7 +1721,7 @@ export default function RadarDashboard() {
             补充当前关注的来源 — 追踪你在意的博主、频道、网站
           </button>
         )}
-      </section>
+      </main>
 
       {detailOpen && selectedArticle && (
         <IntelDetailDialog
@@ -1832,6 +1813,6 @@ export default function RadarDashboard() {
           onClose={() => setSourcesOpen(false)}
         />
       )}
-    </main>
+    </div>
   );
 }
