@@ -9,6 +9,7 @@ import {
 } from "react";
 import ReactMarkdown from "react-markdown";
 import {
+  hasSubstantiveNewsContent,
   resolveNewsContent,
   selectOriginalArticleSource,
 } from "../news-content";
@@ -20,7 +21,6 @@ import {
   formatArticleDate,
   formatRelativeTime,
   formatTime,
-  researchFocusLabel,
   sourceTypeLabel,
   storySourceInsight,
   verificationLabel,
@@ -72,33 +72,6 @@ type Props = {
     target?: string,
   ) => void;
 };
-
-const STORY_EXPLORATION_ROUTES: {
-  focus: Exclude<ResearchFocus, "comprehensive">;
-  marker: string;
-  description: string;
-}[] = [
-  {
-    focus: "latest",
-    marker: "01",
-    description: "只看新变化、后续动作和明确时间节点。",
-  },
-  {
-    focus: "official",
-    marker: "02",
-    description: "优先寻找声明、原文、当事方回应和一手资料。",
-  },
-  {
-    focus: "perspectives",
-    marker: "03",
-    description: "把不同立场、争议焦点和冲突证据放在一起核对。",
-  },
-  {
-    focus: "background",
-    marker: "04",
-    description: "回溯起因、关键节点、相关主体与历史背景。",
-  },
-];
 
 const STORY_CONTENT_TABS = [
   ["content", "事件内容"],
@@ -261,6 +234,7 @@ export default function IntelDetailDialog({
     [item.sources, source],
   );
   const originalFallbackSource = source ?? item.sources[0] ?? null;
+  const snapshotSource = originalArticleSource ?? originalFallbackSource;
   const relatedReportsMarkdown = useMemo(
     () => buildRelatedReportsMarkdown(item),
     [item],
@@ -289,7 +263,9 @@ export default function IntelDetailDialog({
     0,
   );
   const fulltextSourceCount = item.sources.filter(
-    (candidate) => candidate.content_origin === "fulltext",
+    (candidate) =>
+      candidate.content_origin === "fulltext" &&
+      hasSubstantiveNewsContent(candidate),
   ).length;
   const evidenceReadiness =
     item.verification_status === "conflicting"
@@ -307,17 +283,24 @@ export default function IntelDetailDialog({
   }[evidenceReadiness];
   const evidenceGuidance = {
     strong:
-      "已经具备正文与交叉证据，深挖会重点补充背景、不同观点和下一步影响。",
+      "深挖会重点补充背景、不同观点和下一步影响。",
     partial:
-      "当前已有一部分直接证据，深挖会优先补齐官方来源、完整正文或第二条独立证据链。",
+      "深挖会优先补齐官方来源、完整正文或第二条独立证据链。",
     limited:
-      "当前主要依赖标题或 Feed 摘要。深挖会先寻找完整正文、官方来源和第二条独立证据，再形成判断。",
+      "深挖会先寻找完整正文、官方来源和第二条独立证据，再形成判断。",
     conflicting:
-      "不同来源存在冲突。深挖会先定位分歧、核对原文和时间顺序，不把争议说法写成已确认事实。",
+      "深挖会先定位来源分歧，核对原文和时间顺序。",
   }[evidenceReadiness];
   const sourceOriginSummary = sourceInsight.officialSource
-    ? `已发现官方来源候选：${sourceInsight.officialSource.publisher}`
-    : "尚未发现可直接确认的官方事实源";
+    ? `${sourceInsight.officialSource.publisher}（官方来源候选）`
+    : "官方来源待补充";
+  const snapshotFormat =
+    snapshotSource?.content_origin === "fixture" ||
+    snapshotSource?.url.includes(".example.test")
+      ? "演示内容"
+      : originalArticleSource
+        ? "已保存原始正文"
+        : "标题或 Feed 摘要";
   const earliestSourceSummary = sourceInsight.earliestSource
     ? `${sourceInsight.earliestSource.publisher}，${formatArticleDate(sourceInsight.earliestSource.published_at)}`
     : "发布时间信息不足";
@@ -553,182 +536,6 @@ export default function IntelDetailDialog({
                   )}
                 </section>
               ) : null}
-
-              <div className="story-hub-actions">
-                <button
-                  type="button"
-                  className="story-deep-dive"
-                  onClick={() => onDeepDive("comprehensive")}
-                  disabled={Boolean(deepDiveBusyFocus)}
-                >
-                  <span aria-hidden="true">✦</span>
-                  <span>
-                    <strong>
-                      {deepDiveStartingFocus
-                        ? `正在启动${researchFocusLabel(deepDiveStartingFocus)}`
-                        : deepDiveActiveFocus
-                          ? `${researchFocusLabel(deepDiveActiveFocus)}中`
-                          : evidenceReadiness === "limited"
-                            ? "深挖并补齐证据"
-                            : "一键全面深挖"}
-                    </strong>
-                    <small>已确认事实、背景脉络、来源观点与待确认问题</small>
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className={`story-watch-toggle${watch?.enabled ? " active" : ""}`}
-                  aria-expanded={watchEditorOpen}
-                  onClick={() => setWatchEditorOpen((current) => !current)}
-                >
-                  <span aria-hidden="true">◎</span>
-                  <span>
-                    <strong>{watch?.enabled ? "正在持续追踪" : "持续追踪这个故事"}</strong>
-                    <small>
-                      {watch?.last_checked_at
-                        ? `上次检查 ${formatRelativeTime(watch.last_checked_at)}`
-                        : "设置问题，后续只提醒实质变化"}
-                    </small>
-                  </span>
-                </button>
-              </div>
-
-              {watchEditorOpen && (
-                <section
-                  className={`story-watch-panel${watch?.enabled ? " active" : ""}`}
-                  aria-labelledby="story-watch-title"
-                >
-                  <header>
-                    <div>
-                      <span>{watch?.enabled ? "持续追踪中" : "建立追踪任务"}</span>
-                      <h2 id="story-watch-title">持续关注这个问题</h2>
-                    </div>
-                    {watch?.enabled && (
-                      <b>{watch.cadence === "manual" ? "手动检查" : watch.cadence === "daily" ? "每天检查" : "每周检查"}</b>
-                    )}
-                  </header>
-                  <label>
-                    <span>你想持续确认什么？</span>
-                    <textarea
-                      value={watchQuestion}
-                      maxLength={300}
-                      rows={3}
-                      disabled={watchBusy}
-                      onChange={(event) => setWatchQuestion(event.target.value)}
-                    />
-                  </label>
-                  <div className="story-watch-fields">
-                    <label>
-                      <span>优先调查</span>
-                      <select
-                        value={watchFocus}
-                        disabled={watchBusy}
-                        onChange={(event) => setWatchFocus(event.target.value as ResearchFocus)}
-                      >
-                        <option value="latest">追最新进展</option>
-                        <option value="official">找官方信源</option>
-                        <option value="perspectives">看不同观点</option>
-                        <option value="background">补来龙去脉</option>
-                        <option value="comprehensive">全面深挖</option>
-                      </select>
-                    </label>
-                    <label>
-                      <span>检查频率</span>
-                      <select
-                        value={watchCadence}
-                        disabled={watchBusy}
-                        onChange={(event) => setWatchCadence(event.target.value as StoryWatchCadence)}
-                      >
-                        <option value="manual">由我手动检查</option>
-                        <option value="daily">每天自动检查</option>
-                        <option value="weekly">每周自动检查</option>
-                      </select>
-                    </label>
-                  </div>
-                  {watchCadence !== "manual" && !schedulerEnabled && (
-                    <p className="story-watch-note">
-                      频率可以先保存；当前计划扫描未开启，不会自动调用模型或产生费用，你仍可手动检查。
-                    </p>
-                  )}
-                  {watch?.next_check_at && schedulerEnabled && (
-                    <p className="story-watch-note">
-                      下次自动检查：{formatTime(watch.next_check_at)}。没有可靠新进展时会诚实记录为“暂无实质变化”。
-                    </p>
-                  )}
-                  <footer>
-                    <button
-                      type="button"
-                      className="story-watch-save"
-                      disabled={watchBusy || watchQuestion.trim().length < 2}
-                      onClick={() => onSaveWatch({
-                        research_focus: watchFocus,
-                        question: watchQuestion.trim(),
-                        cadence: watchCadence,
-                        enabled: true,
-                      })}
-                    >
-                      {watchSaving ? "保存中…" : watch?.enabled ? "保存追踪设置" : "开始持续追踪"}
-                    </button>
-                    {watch?.enabled && (
-                      <>
-                        <button type="button" disabled={watchBusy} onClick={onCheckWatch}>
-                          {watchChecking ? "正在启动…" : "立即检查更新"}
-                        </button>
-                        <button
-                          type="button"
-                          className="story-watch-pause"
-                          disabled={watchBusy}
-                          onClick={() => onSaveWatch({
-                            research_focus: watchFocus,
-                            question: watchQuestion.trim(),
-                            cadence: watchCadence,
-                            enabled: false,
-                          })}
-                        >
-                          停止追踪
-                        </button>
-                      </>
-                    )}
-                  </footer>
-                </section>
-              )}
-
-              <section
-                className="story-exploration"
-                aria-labelledby="story-exploration-title"
-              >
-                <header>
-                  <div>
-                    <span>选择你的调查路线</span>
-                    <h2 id="story-exploration-title">接下来想查什么？</h2>
-                  </div>
-                  <p>每条路线都会开启一个有来源、有过程记录的深挖任务。</p>
-                </header>
-                <div>
-                  {STORY_EXPLORATION_ROUTES.map((route) => {
-                    const starting = deepDiveStartingFocus === route.focus;
-                    const active = deepDiveActiveFocus === route.focus;
-                    return (
-                      <button
-                        type="button"
-                        key={route.focus}
-                        className={starting || active ? "active" : ""}
-                        disabled={Boolean(deepDiveBusyFocus)}
-                        onClick={() => onDeepDive(route.focus)}
-                      >
-                        <b aria-hidden="true">{route.marker}</b>
-                        <span>
-                          <strong>{researchFocusLabel(route.focus)}</strong>
-                          <small>{route.description}</small>
-                        </span>
-                        <i aria-hidden="true">
-                          {starting ? "启动中" : active ? "进行中" : "→"}
-                        </i>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
             </section>
 
             <section
@@ -755,57 +562,6 @@ export default function IntelDetailDialog({
                   <p>当前没有需要单独列出的 AI 判断。</p>
                 )}
               </div>
-            </section>
-
-            <section
-              className={`story-evidence-boundary ${evidenceReadiness}`}
-              aria-labelledby="story-evidence-boundary-title"
-            >
-              <header>
-                <div>
-                  <span>本条信息的证据边界</span>
-                  <h2 id="story-evidence-boundary-title">
-                    当前可以确认到什么程度
-                  </h2>
-                </div>
-                <b>{evidenceReadinessLabel}</b>
-              </header>
-              <div>
-                <article>
-                  <span>正文快照</span>
-                  <strong>
-                    {originalArticleSource
-                      ? `${fulltextSourceCount} 篇完整正文`
-                      : content.mode === "digest"
-                        ? "标题或 Feed 摘要"
-                        : "正文尚未取得"}
-                  </strong>
-                  <small>
-                    {originalArticleSource
-                      ? `当前展示 ${originalArticleSource.publisher} 的原始正文`
-                      : "系统不会把摘要扩写成原文"}
-                  </small>
-                </article>
-                <article>
-                  <span>证据支撑</span>
-                  <strong>{evidenceChainCount} 条独立证据链</strong>
-                  <small>{citationCount} 段可定位引文</small>
-                </article>
-                <article>
-                  <span>源头状态</span>
-                  <strong>
-                    {sourceInsight.officialSource
-                      ? "已发现官方来源候选"
-                      : "官方来源待补充"}
-                  </strong>
-                  <small>
-                    {contradictionCount
-                      ? `${contradictionCount} 条冲突证据需要核对`
-                      : "暂未记录来源间的直接冲突"}
-                  </small>
-                </article>
-              </div>
-              <p>{evidenceGuidance}</p>
             </section>
 
             <section
@@ -883,6 +639,9 @@ export default function IntelDetailDialog({
                   role="tabpanel"
                   aria-labelledby="story-content-tab-facts"
                 >
+                  {citationCount > 0 && (
+                    <p className="story-content-origin">{citationCount} 段可定位引文</p>
+                  )}
                   {item.facts.length ? (
                     <ol className="story-fact-list">
                       {item.facts.map((fact) => {
@@ -912,7 +671,7 @@ export default function IntelDetailDialog({
                   ) : (
                     <p className="story-content-empty">暂无可以单独列出的已验证事实。</p>
                   )}
-                  {!!item.facts.length && !item.facts.some((fact) => (fact.citations ?? []).length) && (
+                  {item.facts.length > 0 && citationCount === 0 && (
                     <p className="story-content-note">
                       这条历史情报只保存了来源级引用，暂时没有可定位的原文片段。
                     </p>
@@ -927,7 +686,12 @@ export default function IntelDetailDialog({
                   role="tabpanel"
                   aria-labelledby="story-content-tab-assessment"
                 >
-                  <p className="story-assessment-reason">{item.confidence_reason}</p>
+                  <div className="story-assessment-summary">
+                    <span className={`story-evidence-status ${evidenceReadiness}`}>
+                      {evidenceReadinessLabel}
+                    </span>
+                    <p>{item.confidence_reason}</p>
+                  </div>
                   <dl>
                     <div>
                       <dt>可信度</dt>
@@ -943,9 +707,14 @@ export default function IntelDetailDialog({
                     </div>
                     <div>
                       <dt>冲突证据</dt>
-                      <dd>{contradictionCount} 条</dd>
+                      <dd>
+                        {contradictionCount
+                          ? `${contradictionCount} 条待核对`
+                          : "暂无冲突引文记录"}
+                      </dd>
                     </div>
                   </dl>
+                  <p className="story-assessment-guidance">{evidenceGuidance}</p>
                   <section aria-labelledby="story-unresolved-title">
                     <h3 id="story-unresolved-title">仍待确认</h3>
                     <ul>
@@ -975,11 +744,18 @@ export default function IntelDetailDialog({
                     </div>
                     <div>
                       <dt>覆盖范围</dt>
-                      <dd>{sourceInsight.sourceCount} 篇报道，来自 {sourceInsight.publisherCount} 家媒体</dd>
+                      <dd>
+                        {sourceInsight.sourceCount} 篇报道，来自 {sourceInsight.publisherCount} 家媒体
+                        {fulltextSourceCount > 0 && ` · ${fulltextSourceCount} 篇有完整正文`}
+                      </dd>
                     </div>
                     <div>
-                      <dt>当前正文</dt>
-                      <dd>{contentSource ? `${contentSource.publisher} · ${contentOriginLabel(contentSource.content_origin, contentSource.url)}` : "待确认"}</dd>
+                      <dt>正文快照</dt>
+                      <dd>
+                        {snapshotSource
+                          ? `${snapshotSource.publisher} · ${snapshotFormat}`
+                          : "正文尚未取得"}
+                      </dd>
                     </div>
                   </dl>
                   {!!sourceInsight.attributionHints.length && (
@@ -1130,6 +906,148 @@ export default function IntelDetailDialog({
                     ? "反馈已保存；再次点击已选项即可撤销。"
                     : "你可以随时撤销反馈。"}
               </small>
+
+              <div className="detail-follow-up-actions">
+                <button
+                  type="button"
+                  className="story-deep-dive"
+                  onClick={() => onDeepDive("comprehensive")}
+                  disabled={Boolean(deepDiveBusyFocus)}
+                >
+                  <span>
+                    <strong>
+                      {deepDiveStartingFocus
+                        ? "正在启动深挖…"
+                        : deepDiveActiveFocus
+                          ? "正在深挖…"
+                          : evidenceReadiness === "limited"
+                            ? "深挖并补齐证据"
+                            : "深挖这个故事"}
+                    </strong>
+                    <small>核对最新进展、官方来源、不同观点和事件背景</small>
+                  </span>
+                  <span aria-hidden="true">→</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`story-watch-toggle${watch?.enabled ? " active" : ""}`}
+                  aria-expanded={watchEditorOpen}
+                  aria-controls={watchEditorOpen ? "story-watch-panel" : undefined}
+                  onClick={() => setWatchEditorOpen((current) => !current)}
+                >
+                  <span aria-hidden="true">◎</span>
+                  <span>
+                    <strong>{watch?.enabled ? "正在持续追踪" : "持续追踪这个故事"}</strong>
+                    <small>
+                      {watch?.last_checked_at
+                        ? `上次检查 ${formatRelativeTime(watch.last_checked_at)}`
+                        : "设置问题，后续只提醒实质变化"}
+                    </small>
+                  </span>
+                </button>
+
+                {watchEditorOpen && (
+                  <section
+                    id="story-watch-panel"
+                    className={`story-watch-panel${watch?.enabled ? " active" : ""}`}
+                    aria-labelledby="story-watch-title"
+                  >
+                    <header>
+                      <div>
+                        <span>{watch?.enabled ? "持续追踪中" : "建立追踪任务"}</span>
+                        <h2 id="story-watch-title">持续关注这个问题</h2>
+                      </div>
+                      {watch?.enabled && (
+                        <b>{watch.cadence === "manual" ? "手动检查" : watch.cadence === "daily" ? "每天检查" : "每周检查"}</b>
+                      )}
+                    </header>
+                    <label>
+                      <span>你想持续确认什么？</span>
+                      <textarea
+                        value={watchQuestion}
+                        maxLength={300}
+                        rows={3}
+                        disabled={watchBusy}
+                        onChange={(event) => setWatchQuestion(event.target.value)}
+                      />
+                    </label>
+                    <div className="story-watch-fields">
+                      <label>
+                        <span>优先调查</span>
+                        <select
+                          value={watchFocus}
+                          disabled={watchBusy}
+                          onChange={(event) => setWatchFocus(event.target.value as ResearchFocus)}
+                        >
+                          <option value="latest">追最新进展</option>
+                          <option value="official">找官方信源</option>
+                          <option value="perspectives">看不同观点</option>
+                          <option value="background">补来龙去脉</option>
+                          <option value="comprehensive">全面深挖</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>检查频率</span>
+                        <select
+                          value={watchCadence}
+                          disabled={watchBusy}
+                          onChange={(event) => setWatchCadence(event.target.value as StoryWatchCadence)}
+                        >
+                          <option value="manual">由我手动检查</option>
+                          <option value="daily">每天自动检查</option>
+                          <option value="weekly">每周自动检查</option>
+                        </select>
+                      </label>
+                    </div>
+                    {watchCadence !== "manual" && !schedulerEnabled && (
+                      <p className="story-watch-note">
+                        频率可以先保存；当前计划扫描未开启，不会自动调用模型或产生费用，你仍可手动检查。
+                      </p>
+                    )}
+                    {watch?.next_check_at && schedulerEnabled && (
+                      <p className="story-watch-note">
+                        下次自动检查：{formatTime(watch.next_check_at)}。没有可靠新进展时会诚实记录为“暂无实质变化”。
+                      </p>
+                    )}
+                    <footer>
+                      <button
+                        type="button"
+                        className="story-watch-save"
+                        disabled={watchBusy || watchQuestion.trim().length < 2}
+                        onClick={() => onSaveWatch({
+                          research_focus: watchFocus,
+                          question: watchQuestion.trim(),
+                          cadence: watchCadence,
+                          enabled: true,
+                        })}
+                      >
+                        {watchSaving ? "保存中…" : watch?.enabled ? "保存追踪设置" : "开始持续追踪"}
+                      </button>
+                      {watch?.enabled && (
+                        <>
+                          <button type="button" disabled={watchBusy} onClick={onCheckWatch}>
+                            {watchChecking ? "正在启动…" : "立即检查更新"}
+                          </button>
+                          <button
+                            type="button"
+                            className="story-watch-pause"
+                            disabled={watchBusy}
+                            onClick={() => onSaveWatch({
+                              research_focus: watchFocus,
+                              question: watchQuestion.trim(),
+                              cadence: watchCadence,
+                              enabled: false,
+                            })}
+                          >
+                            停止追踪
+                          </button>
+                        </>
+                      )}
+                    </footer>
+                  </section>
+                )}
+              </div>
             </section>
 
             <footer className="markdown-detail-footer">

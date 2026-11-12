@@ -6,12 +6,14 @@ import {
   sourceOutcomeLabel,
 } from "../scan-explanation.mjs";
 import type {
+  Run,
   SourceDocument,
   SourceHealth,
   SourceQueryMetric,
 } from "../radar-types";
 
 type Props = {
+  run: Pick<Run, "status" | "result">;
   documents: SourceDocument[];
   sourceHealth: SourceHealth[];
   queryMetrics: SourceQueryMetric[];
@@ -29,11 +31,36 @@ function safeExternalUrl(value: string): string | null {
 }
 
 export default function ScanCoveragePanel({
+  run,
   documents,
   sourceHealth,
   queryMetrics,
 }: Props) {
   const explanation = buildScanExplanation(documents);
+  const { selected, reviewed, deferred, blocked } = explanation.outcomeCounts;
+  const generated = run.result?.item_count ?? 0;
+  const stages = [
+    `${documents.length} 条候选`,
+    `${selected + reviewed} 条证据来源`,
+  ];
+  let note: string | undefined;
+  switch (run.status) {
+    case "failed":
+      stages.push(generated > 0 ? "投递未完成" : "整理未完成");
+      note = generated > 0 ? `${generated} 条情报已保留` : "本次未生成新情报";
+      break;
+    case "cancelled":
+      stages.push("扫描已取消");
+      note = "本次未生成新情报";
+      break;
+    case "queued":
+    case "running":
+      stages.push("正在整理");
+      break;
+    default:
+      stages.push(`${selected} 条来源入选`, `${generated} 条情报`);
+      note = `${deferred + reviewed + blocked} 条来源未采用`;
+  }
   const unhealthySources = sourceHealth.filter(
     (item) => item.health_status !== "healthy",
   ).length;
@@ -47,13 +74,19 @@ export default function ScanCoveragePanel({
   );
 
   return (
-    <details className="scan-explanation">
+    <details className="scan-explanation" data-run-status={run.status}>
       <summary>
-        <span>
-          <strong>查看筛选与来源覆盖</strong>
-          <small>为什么采用这些内容，以及其他来源去了哪里</small>
+        <span className="scan-funnel" role="status">
+          <span className="scan-funnel-label">最近扫描</span>
+          {stages.map((stage, index) => (
+            <span className="scan-stage" key={stage}>
+              {index > 0 && <i aria-hidden="true">→</i>}
+              <strong>{stage}</strong>
+            </span>
+          ))}
+          {note && <small>{note}</small>}
         </span>
-        <b>{explanation.reasonGroups.length} 类未采用原因</b>
+        <span className="scan-explanation-action">查看筛选与来源覆盖</span>
       </summary>
 
       <div className="scan-explanation-body">
@@ -150,7 +183,11 @@ export default function ScanCoveragePanel({
           <header>
             <div>
               <span>未采用内容</span>
-              <h3>主要原因</h3>
+              <h3>
+                {explanation.reasonGroups.length
+                  ? `${explanation.reasonGroups.length} 类未采用原因`
+                  : "未采用原因"}
+              </h3>
             </div>
             <p>这里只解释已保存的质量信号，不猜测模型没有记录的原因。</p>
           </header>

@@ -16,12 +16,21 @@ test("keeps the story detail sections in the action-first order", async () => {
     'className="markdown-news-document story-related-reports"',
   );
   const feedback = source.indexOf('className="detail-feedback"');
+  const followUp = source.indexOf('className="detail-follow-up-actions"');
+  const deepDive = source.indexOf('className="story-deep-dive"');
+  const watch = source.indexOf('className={`story-watch-toggle');
+  const watchPanel = source.indexOf('id="story-watch-panel"');
+  const footer = source.indexOf('className="markdown-detail-footer"');
 
   assert.ok(hero >= 0, "missing action-first hero");
   assert.ok(hero < judgement, "AI judgement must follow the hero");
   assert.ok(judgement < workspace, "content tabs must follow AI judgement");
   assert.ok(workspace < relatedReports, "related reports must stay below content tabs");
   assert.ok(relatedReports < feedback, "feedback must stay below related reports");
+  assert.ok(feedback < followUp && followUp < deepDive, "the deep dive must follow feedback");
+  assert.ok(deepDive < watch && watch < watchPanel && watchPanel < footer, "tracking must follow the deep dive");
+  assert.match(source.slice(deepDive, footer), /onDeepDive\("comprehensive"\)/);
+  assert.doesNotMatch(source, /story-exploration/);
 });
 
 test("keeps the summary and adds untouched source fulltext directly below it", async () => {
@@ -65,20 +74,15 @@ test("shows only real multi-event timelines and exposes five content tabs", asyn
   assert.match(source, /event\.key !== "ArrowRight"/);
 });
 
-test("places the evidence boundary directly before the event information", async () => {
+test("integrates evidence into the corresponding event information tabs", async () => {
   const source = await readFile(componentUrl, "utf8");
-  const original = source.indexOf('className="story-original-copy"');
-  const boundary = source.indexOf("story-evidence-boundary");
-  const deepDive = source.indexOf('className="story-deep-dive"');
-  const judgement = source.indexOf('className="story-ai-judgement"');
-  const workspace = source.indexOf('className="story-content-workspace"');
+  const facts = source.indexOf('id="story-content-panel-facts"');
+  const assessment = source.indexOf('id="story-content-panel-assessment"');
+  const sources = source.indexOf('id="story-content-panel-sources"');
 
-  assert.ok(original >= 0, "missing the original source snapshot");
-  assert.ok(deepDive > original, "deep dive must follow the source snapshot");
-  assert.ok(boundary > judgement, "evidence boundary must follow AI judgement");
-  assert.ok(workspace > boundary, "event information must follow the evidence boundary");
-  assert.match(source, /本条信息的证据边界/);
-  assert.match(source, /当前可以确认到什么程度/);
+  assert.doesNotMatch(source, /story-evidence-boundary/);
+  assert.match(source.slice(facts, assessment), /\{citationCount\} 段可定位引文/);
+  assert.match(source.slice(assessment, sources), /evidenceReadinessLabel[\s\S]*独立证据链[\s\S]*冲突证据[\s\S]*evidenceGuidance/);
+  assert.match(source.slice(sources), /事实源[\s\S]*sourceOriginSummary[\s\S]*正文快照[\s\S]*snapshotFormat/);
   assert.match(source, /深挖并补齐证据/);
-  assert.match(source, /已确认事实、背景脉络、来源观点与待确认问题/);
 });

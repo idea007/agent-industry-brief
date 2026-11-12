@@ -109,8 +109,9 @@ test("keeps source diagnostics and evidence boundaries visible in the UI", async
     "utf8",
   );
 
-  assert.match(coverage, /查看筛选与来源覆盖/);
-  assert.match(coverage, /为什么采用这些内容，以及其他来源去了哪里/);
+  const summary = coverage.match(/<summary>([\s\S]*?)<\/summary>/)?.[1] ?? "";
+  assert.match(summary, /最近扫描/);
+  assert.match(summary, /查看筛选与来源覆盖/);
   assert.match(coverage, /AI 检索累计发现/);
   assert.ok(
     sources.includes("连续 ${item.consecutive_failures} 次失败"),

@@ -736,36 +736,6 @@ export default function RadarDashboard() {
     (source) =>
       !source.subscriptionId || source.subscriptionId === runTarget?.id,
   );
-  const scanFunnel = useMemo(() => {
-    if (
-      !connected ||
-      !latestIndustryRun ||
-      runDocumentsRunId !== latestIndustryRun.id ||
-      !runDocuments.length
-    ) {
-      return null;
-    }
-    const selected = runDocuments.filter(
-      (document) => document.last_outcome === "selected",
-    ).length;
-    const blocked = runDocuments.filter(
-      (document) => document.last_outcome === "blocked",
-    ).length;
-    const reviewed = runDocuments.filter(
-      (document) => document.last_outcome === "reviewed",
-    ).length;
-    const deferred = runDocuments.filter(
-      (document) => document.last_outcome === "deferred",
-    ).length;
-    return {
-      candidates: runDocuments.length,
-      evidence: selected + reviewed,
-      selected,
-      notSelected: deferred + reviewed + blocked,
-      generated: latestIndustryRun.result?.item_count ?? 0,
-      status: latestIndustryRun.status,
-    };
-  }, [connected, latestIndustryRun, runDocuments, runDocumentsRunId]);
   const showRunCard =
     !!latestIndustryApproval ||
     (!!latestIndustryRun &&
@@ -1528,57 +1498,17 @@ export default function RadarDashboard() {
           </span>
         </header>
 
-        {scanFunnel && (
-          <div className="scan-overview">
-            <div
-              className={`scan-funnel ${scanFunnel.status}`}
-              role="status"
-              data-run-status={scanFunnel.status}
-            >
-              <span>最近扫描</span>
-              <strong>{scanFunnel.candidates} 条候选</strong>
-              <i aria-hidden="true">→</i>
-              <strong>{scanFunnel.evidence} 条证据来源</strong>
-              {scanFunnel.status === "failed" ? (
-                <>
-                  <i aria-hidden="true">→</i>
-                  <strong>
-                    {scanFunnel.generated > 0 ? "投递未完成" : "整理未完成"}
-                  </strong>
-                  <small>
-                    {scanFunnel.generated > 0
-                      ? `${scanFunnel.generated} 条情报已保留`
-                      : "本次未生成新情报"}
-                  </small>
-                </>
-              ) : scanFunnel.status === "cancelled" ? (
-                <>
-                  <i aria-hidden="true">→</i>
-                  <strong>扫描已取消</strong>
-                  <small>本次未生成新情报</small>
-                </>
-              ) : ["queued", "running"].includes(scanFunnel.status) ? (
-                <>
-                  <i aria-hidden="true">→</i>
-                  <strong>正在整理</strong>
-                </>
-              ) : (
-                <>
-                  <i aria-hidden="true">→</i>
-                  <strong>{scanFunnel.selected} 条来源入选</strong>
-                  <i aria-hidden="true">→</i>
-                  <strong>{scanFunnel.generated} 条情报</strong>
-                  <small>{scanFunnel.notSelected} 条来源未采用</small>
-                </>
-              )}
-            </div>
+        {connected &&
+          latestIndustryRun &&
+          runDocumentsRunId === latestIndustryRun.id &&
+          runDocuments.length > 0 && (
             <ScanCoveragePanel
+              run={latestIndustryRun}
               documents={runDocuments}
               sourceHealth={sourceHealth}
               queryMetrics={sourceQueryMetrics}
             />
-          </div>
-        )}
+          )}
 
         {notice && (
           <div className="notice-banner" role="alert">
