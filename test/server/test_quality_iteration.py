@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime, timedelta, timezone
+
+import pytest
 
 from app.domain.models import (
     AlertRuleCreate,
@@ -221,6 +224,52 @@ def test_structured_citations_distinguish_support_and_conflict(harness):
     ]
     assert all(citation.quote_hash for citation in citations)
     assert all(citation.locator.paragraph == 0 for citation in citations)
+
+
+@pytest.mark.parametrize(
+    ("quote", "failed_check"),
+    [
+        ("星海科技宣布首批投入 10 亿元", None),
+        ("星海科技宣布首批投入 99 亿元", "citation_quote_integrity"),
+        ("更多活动安排详见报名通知。", "fact_citation_coverage"),
+        (" \t", "citation_quote_integrity"),
+    ],
+)
+def test_eval_verifies_model_supplied_quotes(quote, failed_check):
+    source_id = "official"
+    document = _document(
+        source_id,
+        url="https://star.example/announcement",
+        body="更多活动安排详见报名通知。\n\n星海科技宣布首批投入 10 亿元，发布 AI Agent 平台。",
+        publisher="产业资讯",
+    )
+    document["title"] = "活动纪要"
+    item = _draft([source_id]).model_dump(mode="json")
+    item["facts"][0]["source_quotes"] = [
+        {"source_id": source_id, "quote": quote, "relation": "supports"}
+    ]
+
+    result, drafts = EvalRunner().evaluate_items(
+        [item],
+        allowed_source_ids={source_id},
+        blocked_source_ids=set(),
+        documents=[document],
+    )
+
+    if failed_check is not None:
+        assert not result.passed
+        assert not drafts
+        checks = {check["name"]: check for check in result.checks}
+        assert not checks[failed_check]["passed"]
+        return
+
+    assert result.passed
+    citation = drafts[0].facts[0].citations[0]
+    assert citation.source_id == source_id
+    assert citation.quote == quote
+    assert citation.quote_hash == hashlib.sha256(quote.encode()).hexdigest()
+    assert citation.locator.paragraph == 1
+    assert citation.relation == "supports"
 
 
 def test_structured_citations_support_fact_spanning_adjacent_sentences():

@@ -272,9 +272,12 @@ class CitationLocator(BaseModel):
     paragraph: int | None = Field(default=None, ge=0)
 
 
-class IntelCitation(BaseModel):
+class IntelQuote(BaseModel):
     source_id: str
     quote: str = Field(min_length=1, max_length=320)
+
+
+class IntelCitation(IntelQuote):
     quote_hash: str
     locator: CitationLocator = Field(default_factory=CitationLocator)
     relation: Literal["supports", "contradicts", "context"] = "supports"
@@ -284,11 +287,17 @@ class IntelFact(BaseModel):
     text: str
     source_ids: list[str] = Field(min_length=1)
     citations: list[IntelCitation] = Field(default_factory=list)
+    source_quotes: list[IntelQuote] | None = Field(
+        default=None, min_length=1, exclude=True
+    )
 
     @model_validator(mode="after")
     def citations_belong_to_fact_sources(self) -> "IntelFact":
+        if self.citations and self.source_quotes:
+            raise ValueError("Provide source quotes or citations")
         unknown = {
-            citation.source_id for citation in self.citations
+            citation.source_id
+            for citation in (self.source_quotes or self.citations)
         } - set(self.source_ids)
         if unknown:
             raise ValueError(

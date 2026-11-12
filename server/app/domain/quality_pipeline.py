@@ -12,6 +12,7 @@ from app.domain.focus import effective_focus_keywords
 from app.domain.models import (
     CitationLocator,
     IntelCitation,
+    IntelQuote,
     Subscription,
     SubscriptionPreferences,
 )
@@ -854,8 +855,15 @@ def build_fact_citations(
     fact_text: str,
     source_ids: list[str],
     documents_by_id: dict[str, dict[str, Any]],
+    *,
+    source_quotes: list[IntelQuote] | None = None,
 ) -> list[IntelCitation]:
     citations: list[IntelCitation] = []
+    quotes_by_source: dict[str, list[str]] = {}
+    for source_quote in source_quotes or ():
+        quotes_by_source.setdefault(source_quote.source_id, []).append(
+            source_quote.quote
+        )
     fact_tokens = _tokens(fact_text)
     fact_mentions = _number_mentions(fact_text)
     fact_latin_identifiers = _latin_identifiers(fact_text)
@@ -864,9 +872,7 @@ def build_fact_citations(
         re.search(r"[\u3400-\u4dbf\u4e00-\u9fff]", fact_text)
     )
     for source_id in source_ids:
-        document = documents_by_id.get(source_id)
-        if not document:
-            continue
+        document = documents_by_id.get(source_id, {})
         body = str(document.get("body") or "")
         paragraphs = [
             re.sub(r"\s+", " ", paragraph).strip()
@@ -875,58 +881,73 @@ def build_fact_citations(
         ]
         if not paragraphs and body.strip():
             paragraphs = [re.sub(r"\s+", " ", body).strip()]
-        candidates: list[
-            tuple[float, int, str, float, float, float, bool]
-        ] = []
-        for paragraph_index, paragraph in enumerate(paragraphs):
-            for quote in _citation_quotes(paragraph):
-                quote_tokens = _tokens(quote)
-                overlap = _jaccard(fact_tokens, quote_tokens)
-                fact_coverage = (
-                    len(fact_tokens & quote_tokens)
-                    / len(fact_tokens)
-                    if fact_tokens
-                    else 0.0
-                )
-                number_score = _number_support_rate(
-                    fact_text, quote
-                )
-                quote_contains_chinese = bool(
-                    re.search(
-                        r"[\u3400-\u4dbf\u4e00-\u9fff]",
-                        quote,
-                    )
-                )
-                shared_identifiers = (
-                    fact_latin_identifiers
-                    & _latin_identifiers(quote)
-                )
-                shared_concepts = fact_concepts & _concepts(quote)
-                cross_language_match = (
-                    fact_contains_chinese != quote_contains_chinese
-                    and len(shared_identifiers) >= 2
-                    and bool(shared_concepts)
-                )
-                lexical_rank = max(overlap, fact_coverage * 0.55)
-                rank_score = (
-                    lexical_rank * 0.75
-                    + number_score * 0.25
-                    + (0.1 if cross_language_match else 0.0)
-                )
-                candidates.append(
+        supplied = quotes_by_source.get(source_id)
+        quote_spans: list[tuple[int | None, str]] = []
+        if supplied:
+            for quote in supplied:
+                normalized_quote = re.sub(r"\s+", " ", quote).strip()
+                paragraph_index = next(
                     (
-                        rank_score,
-                        paragraph_index,
-                        quote,
-                        overlap,
-                        fact_coverage,
-                        number_score,
-                        cross_language_match,
-                    )
+                        index
+                        for index, paragraph in enumerate(paragraphs)
+                        if normalized_quote and normalized_quote in paragraph
+                    ),
+                    None,
                 )
+                # Keep unmatched quotes so Eval can reject them.
+                quote_spans.append((paragraph_index, quote))
+        else:
+            quote_spans = [
+                (index, quote)
+                for index, paragraph in enumerate(paragraphs)
+                for quote in _citation_quotes(paragraph)
+            ]
+        candidates: list[
+            tuple[float, int | None, str, float, float, float, bool]
+        ] = []
+        for paragraph_index, quote in quote_spans:
+            quote_tokens = _tokens(quote)
+            overlap = _jaccard(fact_tokens, quote_tokens)
+            fact_coverage = (
+                len(fact_tokens & quote_tokens) / len(fact_tokens)
+                if fact_tokens
+                else 0.0
+            )
+            number_score = _number_support_rate(fact_text, quote)
+            quote_contains_chinese = bool(
+                re.search(r"[\u3400-\u4dbf\u4e00-\u9fff]", quote)
+            )
+            shared_identifiers = fact_latin_identifiers & _latin_identifiers(quote)
+            shared_concepts = fact_concepts & _concepts(quote)
+            cross_language_match = (
+                fact_contains_chinese != quote_contains_chinese
+                and len(shared_identifiers) >= 2
+                and bool(shared_concepts)
+            )
+            lexical_rank = max(overlap, fact_coverage * 0.55)
+            rank_score = (
+                lexical_rank * 0.75
+                + number_score * 0.25
+                + (0.1 if cross_language_match else 0.0)
+            )
+            candidates.append(
+                (
+                    rank_score,
+                    paragraph_index,
+                    quote,
+                    overlap,
+                    fact_coverage,
+                    number_score,
+                    cross_language_match,
+                )
+            )
         if not candidates:
             continue
-        (
+        if not supplied:
+            candidates = [
+                max(candidates, key=lambda item: (item[0], -len(item[2])))
+            ]
+        for (
             _,
             paragraph_index,
             quote,
@@ -934,46 +955,38 @@ def build_fact_citations(
             fact_coverage,
             number_score,
             cross_language_match,
-        ) = max(
-            candidates,
-            key=lambda item: (item[0], -len(item[2])),
-        )
-        quote_mentions = _number_mentions(quote)
-        numeric_compatible = (
-            not fact_mentions or number_score == 1.0
-        )
-        text_match = (
-            token_overlap >= 0.18
-            or fact_coverage >= 0.55
-            or cross_language_match
-        )
-        if (
-            fact_mentions
-            and quote_mentions
-            and not numeric_compatible
-            and (
-                token_overlap >= 0.35
+        ) in candidates:
+            quote_mentions = _number_mentions(quote)
+            numeric_compatible = not fact_mentions or number_score == 1.0
+            text_match = (
+                token_overlap >= 0.18
                 or fact_coverage >= 0.55
                 or cross_language_match
             )
-        ):
-            relation = "contradicts"
-        else:
-            relation = (
-                "supports"
-                if text_match and numeric_compatible
-                else "context"
+            if (
+                fact_mentions
+                and quote_mentions
+                and not numeric_compatible
+                and (
+                    token_overlap >= 0.35
+                    or fact_coverage >= 0.55
+                    or cross_language_match
+                )
+            ):
+                relation = "contradicts"
+            else:
+                relation = (
+                    "supports"
+                    if text_match and numeric_compatible
+                    else "context"
+                )
+            citations.append(
+                IntelCitation(
+                    source_id=source_id,
+                    quote=quote,
+                    quote_hash=hashlib.sha256(quote.encode("utf-8")).hexdigest(),
+                    locator=CitationLocator(paragraph=paragraph_index),
+                    relation=relation,
+                )
             )
-        quote = quote[:320]
-        citations.append(
-            IntelCitation(
-                source_id=source_id,
-                quote=quote,
-                quote_hash=hashlib.sha256(
-                    quote.encode("utf-8")
-                ).hexdigest(),
-                locator=CitationLocator(paragraph=paragraph_index),
-                relation=relation,
-            )
-        )
     return citations

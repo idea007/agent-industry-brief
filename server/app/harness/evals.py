@@ -180,6 +180,7 @@ class EvalRunner:
                                             fact.text,
                                             fact.source_ids,
                                             documents_by_id,
+                                            source_quotes=fact.source_quotes,
                                         )
                                     }
                                 )
@@ -292,14 +293,14 @@ class EvalRunner:
             for draft_index, draft in enumerate(drafts):
                 for fact in draft.facts:
                     fact_supported = False
-                    valid_citation_source_ids: set[str] = set()
+                    valid_quotes_by_source: dict[str, list[str]] = {}
                     for citation in fact.citations:
                         document = documents_by_id.get(citation.source_id)
                         body = str((document or {}).get("body") or "")
+                        normalized_quote = _normalized_text(citation.quote)
                         quote_is_present = (
-                            bool(body)
-                            and _normalized_text(citation.quote)
-                            in _normalized_text(body)
+                            bool(normalized_quote)
+                            and normalized_quote in _normalized_text(body)
                         )
                         hash_is_valid = citation.quote_hash == hashlib.sha256(
                             citation.quote.encode("utf-8")
@@ -312,21 +313,22 @@ class EvalRunner:
                                 }
                             )
                             continue
-                        valid_citation_source_ids.add(citation.source_id)
+                        valid_quotes_by_source.setdefault(
+                            citation.source_id, []
+                        ).append(citation.quote)
                         if citation.relation == "supports":
                             fact_supported = True
                         elif citation.relation == "contradicts":
                             contradiction_count += 1
                             contradiction_draft_indexes.add(draft_index)
                     if not fact_supported:
-                        fact_supported = any(
-                            document_supports_claim(
-                                fact.text,
-                                documents_by_id[source_id],
-                            )
-                            for source_id in valid_citation_source_ids
-                            if source_id in documents_by_id
-                        )
+                        for source_id, quotes in valid_quotes_by_source.items():
+                            document = documents_by_id[source_id]
+                            if fact.source_quotes:
+                                document = {**document, "body": "\n".join(quotes)}
+                            if document_supports_claim(fact.text, document):
+                                fact_supported = True
+                                break
                     if fact_supported:
                         structured_supported_facts += 1
                     else:
