@@ -1,0 +1,2088 @@
+{
+  "$source_groups": {
+    "cross-industry-intelligence": [
+      {
+        "id": "hacker-news-newest",
+        "publisher": "Hacker News 社区",
+        "url": "https://hnrss.org/newest",
+        "source_type": "forum",
+        "reliability": 0.66,
+        "language": "en",
+        "region": "global",
+        "tier": "hotspot"
+      },
+      {
+        "id": "v2ex-latest",
+        "publisher": "V2EX 技术社区",
+        "url": "https://www.v2ex.com/index.xml",
+        "source_type": "forum",
+        "reliability": 0.62,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "hotspot"
+      },
+      {
+        "id": "reddit-machine-learning",
+        "publisher": "Reddit · MachineLearning",
+        "url": "https://www.reddit.com/r/MachineLearning/.rss",
+        "source_type": "forum",
+        "reliability": 0.68,
+        "language": "en",
+        "region": "global",
+        "tier": "hotspot"
+      },
+      {
+        "id": "crunchbase-news",
+        "publisher": "Crunchbase News",
+        "url": "https://news.crunchbase.com/feed/",
+        "source_type": "funding",
+        "reliability": 0.82,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "pedaily-investment",
+        "publisher": "投资界",
+        "url": "https://www.pedaily.cn/",
+        "source_type": "funding",
+        "reliability": 0.82,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "trjcn-investment",
+        "publisher": "投融界",
+        "url": "https://news.trjcn.com/",
+        "source_type": "funding",
+        "reliability": 0.7,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "stcn-capital-market",
+        "publisher": "证券时报",
+        "url": "https://stcn.com/",
+        "source_type": "capital_market",
+        "reliability": 0.88,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "waic-conference",
+        "publisher": "世界人工智能大会 WAIC",
+        "url": "https://www.worldaic.com.cn/",
+        "source_type": "event",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "infoq-conferences",
+        "publisher": "InfoQ 技术大会",
+        "url": "https://con.infoq.cn/",
+        "source_type": "event",
+        "reliability": 0.86,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "caip-ai-events",
+        "publisher": "CAIP AI 活动与沙龙",
+        "url": "https://caip.org.cn/activity",
+        "source_type": "event_community",
+        "reliability": 0.72,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "hotspot",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "qbitai-news",
+        "publisher": "量子位",
+        "url": "https://www.qbitai.com/feed",
+        "source_type": "industry_media",
+        "reliability": 0.8,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry"
+      }
+    ],
+    "custom-general-news": [
+      {
+        "id": "bbc-news-top",
+        "publisher": "BBC News",
+        "url": "https://feeds.bbci.co.uk/news/rss.xml",
+        "source_type": "mainstream_media",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "npr-news-top",
+        "publisher": "NPR News",
+        "url": "https://feeds.npr.org/1001/rss.xml",
+        "source_type": "mainstream_media",
+        "reliability": 0.87,
+        "language": "en",
+        "region": "US",
+        "tier": "industry"
+      }
+    ],
+    "custom-sports-general": [
+      {
+        "id": "bbc-sport-top",
+        "publisher": "BBC Sport",
+        "url": "https://feeds.bbci.co.uk/sport/rss.xml",
+        "source_type": "sports_media",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "espn-top-news",
+        "publisher": "ESPN",
+        "url": "https://www.espn.com/espn/rss/news",
+        "source_type": "sports_media",
+        "reliability": 0.86,
+        "language": "en",
+        "region": "US",
+        "tier": "industry"
+      }
+    ],
+    "custom-football": [
+      {
+        "id": "bbc-sport-football",
+        "publisher": "BBC Sport · Football",
+        "url": "https://feeds.bbci.co.uk/sport/football/rss.xml",
+        "source_type": "sports_media",
+        "reliability": 0.89,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "mls-official-news",
+        "publisher": "MLS 官方新闻",
+        "url": "https://www.mlssoccer.com/news/",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "US",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "inter-miami-official-news",
+        "publisher": "Inter Miami CF 官方新闻",
+        "url": "https://www.intermiamicf.com/news/",
+        "source_type": "official",
+        "reliability": 0.97,
+        "language": "en",
+        "region": "US",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "fifa-official-news",
+        "publisher": "FIFA 官方新闻",
+        "url": "https://www.fifa.com/en/news",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "zhibo8-football",
+        "publisher": "直播吧 · 足球",
+        "url": "https://news.zhibo8.com/zuqiu/",
+        "source_type": "sports_media",
+        "reliability": 0.8,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "dongqiudi-directed-search",
+        "publisher": "懂球帝定向检索",
+        "url": "https://news.google.com/rss/search?q=site%3Adongqiudi.com&hl=zh-CN&gl=CN&ceid=CN%3Azh-Hans",
+        "source_type": "aggregator",
+        "reliability": 0.78,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "ai_web_search"
+      }
+    ],
+    "custom-entertainment": [
+      {
+        "id": "variety-entertainment",
+        "publisher": "Variety",
+        "url": "https://variety.com/feed/",
+        "source_type": "entertainment_media",
+        "reliability": 0.85,
+        "language": "en",
+        "region": "US",
+        "tier": "industry"
+      },
+      {
+        "id": "deadline-entertainment",
+        "publisher": "Deadline",
+        "url": "https://deadline.com/feed/",
+        "source_type": "entertainment_media",
+        "reliability": 0.83,
+        "language": "en",
+        "region": "US",
+        "tier": "industry"
+      }
+    ],
+    "custom-humor-content": [
+      {
+        "id": "qiushibaike-text",
+        "publisher": "糗事百科 · 文字",
+        "url": "https://www.qiushibaike.com/text/",
+        "source_type": "community_content",
+        "reliability": 0.58,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "hotspot",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "reddit-jokes",
+        "publisher": "Reddit · Jokes",
+        "url": "https://www.reddit.com/r/Jokes/.rss",
+        "source_type": "community_content",
+        "reliability": 0.6,
+        "language": "en",
+        "region": "global",
+        "tier": "hotspot"
+      },
+      {
+        "id": "reddit-dadjokes",
+        "publisher": "Reddit · Dad Jokes",
+        "url": "https://www.reddit.com/r/dadjokes/.rss",
+        "source_type": "community_content",
+        "reliability": 0.6,
+        "language": "en",
+        "region": "global",
+        "tier": "hotspot"
+      }
+    ]
+  },
+  "$automatic_source_rules": [
+    {
+      "id": "custom-general-baseline",
+      "focus_types": [
+        "industry",
+        "company",
+        "person",
+        "team",
+        "sports",
+        "entertainment",
+        "technology",
+        "event"
+      ],
+      "source_groups": ["custom-general-news"],
+      "priority": 100
+    },
+    {
+      "id": "custom-humor-content",
+      "focus_types": ["entertainment"],
+      "match_any": [
+        "段子",
+        "笑话",
+        "冷笑话",
+        "搞笑",
+        "抖机灵",
+        "热梗",
+        "网络梗",
+        "梗图",
+        "表情包",
+        "幽默",
+        "meme"
+      ],
+      "source_groups": ["custom-humor-content"],
+      "priority": 95
+    },
+    {
+      "id": "custom-football-verticals",
+      "focus_types": ["sports"],
+      "match_any": [
+        "足球",
+        "football",
+        "soccer",
+        "世界杯",
+        "欧冠",
+        "英超",
+        "西甲",
+        "意甲",
+        "德甲",
+        "法甲",
+        "mls",
+        "迈阿密国际",
+        "inter miami"
+      ],
+      "source_groups": ["custom-football"],
+      "priority": 90
+    },
+    {
+      "id": "custom-sports-baseline",
+      "focus_types": ["sports"],
+      "source_groups": ["custom-sports-general"],
+      "priority": 80
+    },
+    {
+      "id": "custom-entertainment-baseline",
+      "focus_types": ["entertainment"],
+      "source_groups": ["custom-entertainment"],
+      "priority": 80
+    },
+    {
+      "id": "custom-industry-baseline",
+      "focus_types": ["industry", "company", "technology", "event"],
+      "source_groups": ["cross-industry-intelligence"],
+      "priority": 70
+    }
+  ],
+  "live2d": {
+    "name": "Live2D",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "Live2D",
+      "Cubism",
+      "Cubism SDK",
+      "2D avatar",
+      "2D 虚拟形象",
+      "VTuber 技术",
+      "动画绑定"
+    ],
+    "exclude_keywords": ["破解版", "盗版下载", "免费下载站", "壁纸下载", "课程招生"],
+    "sources": [
+      {
+        "id": "live2d-official",
+        "publisher": "Live2D 官方动态",
+        "url": "https://www.live2d.com/en/feed/",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "live2d-native-releases",
+        "publisher": "Live2D Cubism Native Framework Releases",
+        "url": "https://github.com/Live2D/CubismNativeFramework/releases.atom",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "live2d-web-releases",
+        "publisher": "Live2D Cubism Web Framework Releases",
+        "url": "https://github.com/Live2D/CubismWebFramework/releases.atom",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "live2d-unity-releases",
+        "publisher": "Live2D Cubism Unity Components Releases",
+        "url": "https://github.com/Live2D/CubismUnityComponents/releases.atom",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "live2d-official-web",
+        "publisher": "Live2D Cubism Official",
+        "url": "https://www.live2d.com/en/",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "live2d-cocos-cn",
+        "publisher": "Cocos 官方资讯",
+        "url": "https://www.cocos.com/information",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "live2d-vrtuoluo-cn",
+        "publisher": "VR陀螺",
+        "url": "https://www.vrtuoluo.cn/",
+        "source_type": "industry",
+        "reliability": 0.84,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "live2d-gameres-cn",
+        "publisher": "GameRes 游资网 · 虚拟现实",
+        "url": "https://www.gameres.com/list/16",
+        "source_type": "industry",
+        "reliability": 0.82,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"破解版\" -\"免费下载\"",
+        "(Live2D OR Cubism) (release OR update OR SDK OR editor)",
+        "(Live2D OR \"2D avatar\") (VTuber OR game OR animation OR \"case study\")",
+        "(site:live2d.com OR site:github.com/Live2D) (Cubism OR Live2D)",
+        "\"Cubism SDK\" (Web OR Native OR Unity) release",
+        "Live2D (business OR partnership OR licensing OR creator)",
+        "(Live2D OR Cubism OR 2D虚拟形象) (中国 OR 国产 OR Cocos OR 虚拟主播) (发布 OR 案例 OR 合作)",
+        "(Live2D OR Cubism OR 虚拟形象) 中国 (著作权 OR 许可 OR 行业标准 OR 商业化 OR 出海)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "ai-agent": {
+    "name": "AI Agent",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "AI Agent",
+      "Agentic AI",
+      "智能体",
+      "多智能体",
+      "Coding Agent",
+      "Agent Harness",
+      "MCP",
+      "工具调用"
+    ],
+    "exclude_keywords": [
+      "房地产经纪人",
+      "保险代理人",
+      "招聘代理",
+      "旅行代理",
+      "课程促销",
+      "培训招生"
+    ],
+    "sources": [
+      {
+        "id": "openai-news",
+        "publisher": "OpenAI News",
+        "url": "https://openai.com/news/rss.xml",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "github-generative-ai",
+        "publisher": "GitHub Blog · Generative AI",
+        "url": "https://github.blog/ai-and-ml/generative-ai/feed/",
+        "source_type": "industry",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "hugging-face-blog",
+        "publisher": "Hugging Face Blog",
+        "url": "https://huggingface.co/blog/feed.xml",
+        "source_type": "industry",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "microsoft-research",
+        "publisher": "Microsoft Research",
+        "url": "https://www.microsoft.com/en-us/research/feed/",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "aws-machine-learning",
+        "publisher": "AWS Machine Learning Blog",
+        "url": "https://aws.amazon.com/blogs/machine-learning/feed/",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "anthropic-agent-news",
+        "publisher": "Anthropic News",
+        "url": "https://www.anthropic.com/news",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "ai-agent-zhipu-cn",
+        "publisher": "智谱 AI 新闻",
+        "url": "https://www.zhipuai.cn/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "ai-agent-minimax-cn",
+        "publisher": "MiniMax 新闻",
+        "url": "https://www.minimaxi.com/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "ai-agent-modelscope-cn",
+        "publisher": "魔搭社区",
+        "url": "https://community.modelscope.cn/",
+        "source_type": "community",
+        "reliability": 0.84,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -房地产 -\"保险代理人\"",
+        "(\"AI Agent\" OR \"Agentic AI\" OR 智能体) (launch OR release OR platform OR product OR 融资)",
+        "(\"multi-agent\" OR 多智能体 OR \"agent orchestration\") (framework OR benchmark OR production)",
+        "(\"coding agent\" OR \"computer use\" OR \"tool use\" OR MCP) (release OR benchmark)",
+        "(\"agent evaluation\" OR \"agent safety\" OR \"agent observability\" OR \"Agent Harness\")",
+        "(site:openai.com OR site:anthropic.com OR site:deepmind.google OR site:github.blog OR site:aws.amazon.com) (agent OR agentic OR MCP)",
+        "(智能体 OR \"AI Agent\") 中国 (智谱 OR MiniMax OR 通义 OR 魔搭) (发布 OR 开源 OR 平台 OR MCP)",
+        "(智能体 OR \"Agentic AI\") 中国 (监管 OR 标准 OR 招标 OR 采购 OR 产业政策 OR 融资)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "robot": {
+    "name": "机器人",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "人形机器人",
+      "具身智能",
+      "机器人产业",
+      "Embodied AI",
+      "humanoid robot",
+      "robot learning",
+      "VLA",
+      "灵巧手",
+      "量产交付"
+    ],
+    "exclude_keywords": [
+      "扫地机器人促销",
+      "玩具机器人",
+      "机器人教育加盟",
+      "少儿编程招生",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "figure-robot-news",
+        "publisher": "Figure News",
+        "url": "https://www.figure.ai/news",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "boston-dynamics-news",
+        "publisher": "Boston Dynamics News",
+        "url": "https://bostondynamics.com/news/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "lerobot-releases",
+        "publisher": "Hugging Face LeRobot Releases",
+        "url": "https://github.com/huggingface/lerobot/releases.atom",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "nvidia-robotics-blog",
+        "publisher": "NVIDIA Technical Blog",
+        "url": "https://developer.nvidia.com/blog/feed/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "ros-discourse",
+        "publisher": "ROS Discourse",
+        "url": "https://discourse.ros.org/latest.rss",
+        "source_type": "industry",
+        "reliability": 0.84,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "robot-unitree-cn",
+        "publisher": "宇树科技新闻",
+        "url": "https://www.unitree.com/cn/news/",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "robot-ubtech-cn",
+        "publisher": "优必选新闻",
+        "url": "https://www.ubtrobot.com/cn/about/news",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "robot-engineai-cn",
+        "publisher": "众擎机器人新闻",
+        "url": "https://www.engineai.com.cn/about-news-media",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"扫地机器人\" -\"玩具机器人\"",
+        "(\"人形机器人\" OR \"humanoid robot\") (量产 OR 交付 OR 工厂 OR 融资 OR 合作)",
+        "(\"具身智能\" OR \"Embodied AI\" OR VLA) (模型 OR 数据集 OR benchmark OR release)",
+        "(\"robot learning\" OR manipulation OR locomotion) (release OR research OR deployment)",
+        "(\"industrial robot\" OR \"service robot\") (deployment OR orders OR production)",
+        "(site:figure.ai OR site:bostondynamics.com OR site:developer.nvidia.com OR site:huggingface.co OR site:unitree.com) (robot OR humanoid OR 具身智能)",
+        "(人形机器人 OR 具身智能) 中国 (宇树 OR 优必选 OR 众擎 OR 智元 OR 傅利叶) (量产 OR 交付 OR 发布)",
+        "(机器人 OR 具身智能) 中国 (政策 OR 标准 OR 招标 OR 产业园 OR 融资 OR 供应链)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "digital-human": {
+    "name": "数字人",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "数字人",
+      "数智人",
+      "数字分身",
+      "虚拟员工",
+      "虚拟主播",
+      "AI avatar",
+      "digital human",
+      "talking head",
+      "实时渲染",
+      "口型同步"
+    ],
+    "exclude_keywords": [
+      "AI主播说新闻",
+      "AI 主播说新闻",
+      "主播说新闻",
+      "主播说丨",
+      "天气播报",
+      "股市播报",
+      "中考成绩"
+    ],
+    "sources": [
+      {
+        "id": "heygen-product-updates",
+        "publisher": "HeyGen Product Updates",
+        "url": "https://www.heygen.com/blog/category/product-updates",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "synthesia-product-updates",
+        "publisher": "Synthesia Product Updates",
+        "url": "https://www.synthesia.io/updates",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "nvidia-technical-blog",
+        "publisher": "NVIDIA Technical Blog",
+        "url": "https://developer.nvidia.com/blog/feed/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "hugging-face-blog-avatar",
+        "publisher": "Hugging Face Blog",
+        "url": "https://huggingface.co/blog/feed.xml",
+        "source_type": "industry",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "liveportrait-releases",
+        "publisher": "LivePortrait Releases",
+        "url": "https://github.com/KwaiVGI/LivePortrait/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "musetalk-releases",
+        "publisher": "MuseTalk Releases",
+        "url": "https://github.com/TMElyralab/MuseTalk/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "digital-human-xmov-cn",
+        "publisher": "相芯科技新闻",
+        "url": "https://www.xmov.ai/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "digital-human-faceunity-cn",
+        "publisher": "FaceUnity 新闻",
+        "url": "https://www.faceunity.com/news.html",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "digital-human-vrtuoluo-cn",
+        "publisher": "VR陀螺",
+        "url": "https://www.vrtuoluo.cn/",
+        "source_type": "industry",
+        "reliability": 0.84,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"AI主播说新闻\" -\"主播说新闻\"",
+        "(\"数字人\" OR \"数智人\" OR \"数字分身\" OR \"虚拟员工\") (发布 OR 升级 OR 平台 OR 模型 OR API OR 融资 OR 合作) -\"AI主播说新闻\"",
+        "(\"数字人\" OR \"虚拟主播\") (实时交互 OR 直播 OR 客服 OR 落地 OR 案例) -\"主播说新闻\"",
+        "(\"digital human\" OR \"AI avatar\" OR \"digital twin\") (launch OR update OR funding OR partnership)",
+        "(\"talking head\" OR \"audio-driven avatar\" OR \"lip sync\" OR \"neural rendering\" OR \"real-time avatar\")",
+        "(site:heygen.com OR site:synthesia.io OR site:developer.nvidia.com OR site:learn.microsoft.com OR site:cloud.baidu.com OR site:cloud.tencent.com OR site:help.aliyun.com) (\"digital human\" OR avatar OR 数字人 OR 数智人)",
+        "(数字人 OR 数智人) 中国 (相芯科技 OR FaceUnity OR 百度智能云 OR 腾讯云) (发布 OR 案例 OR 合作)",
+        "(数字人 OR 数智人) 中国 (标准 OR 监管 OR 广电 OR 文旅 OR 金融 OR 政务) (落地 OR 应用)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "virtual-human": {
+    "name": "虚拟人",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "虚拟人",
+      "VTuber",
+      "虚拟偶像",
+      "虚拟主播",
+      "hololive",
+      "NIJISANJI",
+      "虚拟艺人",
+      "virtual creator"
+    ],
+    "exclude_keywords": [
+      "AI主播说新闻",
+      "数字人客服",
+      "盗版下载",
+      "福利视频",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "cover-corp-news",
+        "publisher": "COVER Corporation News",
+        "url": "https://cover-corp.com/en/news",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "anycolor-news",
+        "publisher": "ANYCOLOR News",
+        "url": "https://www.anycolor.co.jp/en/news",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "hololive-news",
+        "publisher": "hololive production News",
+        "url": "https://hololivepro.com/news_en/",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "vtube-studio-releases",
+        "publisher": "VTube Studio Releases",
+        "url": "https://github.com/DenchiSoft/VTubeStudio/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "univrm-releases",
+        "publisher": "UniVRM Releases",
+        "url": "https://github.com/vrm-c/UniVRM/releases.atom",
+        "source_type": "official",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "virtual-human-vrtuoluo-cn",
+        "publisher": "VR陀螺",
+        "url": "https://www.vrtuoluo.cn/",
+        "source_type": "industry",
+        "reliability": 0.84,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "virtual-human-gameres-cn",
+        "publisher": "GameRes 游资网 · 虚拟现实",
+        "url": "https://www.gameres.com/list/16",
+        "source_type": "industry",
+        "reliability": 0.82,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "virtual-human-cocos-cn",
+        "publisher": "Cocos 官方资讯",
+        "url": "https://www.cocos.com/information",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"AI主播说新闻\" -\"数字人客服\"",
+        "(VTuber OR 虚拟偶像 OR 虚拟艺人) (签约 OR 毕业 OR 出道 OR 融资 OR 合作)",
+        "(hololive OR NIJISANJI OR VShojo) (launch OR event OR partnership OR business)",
+        "(\"virtual creator\" OR VTuber) (platform OR agency OR market OR revenue)",
+        "(VTube Studio OR VRM OR \"motion capture\") (release OR update OR tool)",
+        "(site:cover-corp.com OR site:anycolor.co.jp OR site:hololivepro.com OR site:github.com/DenchiSoft) (VTuber OR virtual)",
+        "(虚拟人 OR 虚拟偶像 OR VTuber) 中国 (哔哩哔哩 OR Cocos OR 虚拟艺人) (出道 OR 活动 OR 合作 OR 平台)",
+        "(虚拟人 OR VTuber) 中国 (版权 OR 监管 OR 商业化 OR 品牌合作 OR 出海)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "llm": {
+    "name": "大模型",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "大模型",
+      "LLM",
+      "基础模型",
+      "推理模型",
+      "foundation model",
+      "language model",
+      "模型发布",
+      "上下文窗口",
+      "推理能力",
+      "模型评测"
+    ],
+    "exclude_keywords": [
+      "账号共享",
+      "破解版",
+      "网盘下载",
+      "提示词大全",
+      "课程促销",
+      "培训招生"
+    ],
+    "sources": [
+      {
+        "id": "openai-news-llm",
+        "publisher": "OpenAI News",
+        "url": "https://openai.com/news/rss.xml",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "anthropic-news-llm",
+        "publisher": "Anthropic News",
+        "url": "https://www.anthropic.com/news",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "deepmind-news-llm",
+        "publisher": "Google DeepMind News",
+        "url": "https://deepmind.google/discover/blog/",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "meta-ai-blog-llm",
+        "publisher": "AI at Meta Blog",
+        "url": "https://ai.meta.com/blog/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "mistral-news-llm",
+        "publisher": "Mistral AI News",
+        "url": "https://mistral.ai/news/",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "hugging-face-blog-llm",
+        "publisher": "Hugging Face Blog",
+        "url": "https://huggingface.co/blog/feed.xml",
+        "source_type": "industry",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "llm-qwen-cn",
+        "publisher": "通义千问博客",
+        "url": "https://qwen.ai/blog/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "llm-deepseek-cn",
+        "publisher": "DeepSeek 更新日志",
+        "url": "https://api-docs.deepseek.com/zh-cn/updates",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "llm-zhipu-cn",
+        "publisher": "智谱 AI 新闻",
+        "url": "https://www.zhipuai.cn/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"账号共享\" -\"网盘下载\"",
+        "(大模型 OR LLM OR \"foundation model\") (发布 OR 升级 OR API OR 开源 OR 融资)",
+        "(\"reasoning model\" OR 推理模型) (benchmark OR release OR evaluation OR 评测)",
+        "(GPT OR Claude OR Gemini OR Llama OR Mistral) (launch OR update OR model OR API)",
+        "(\"context window\" OR inference OR 训练 OR 推理) (cost OR latency OR capability OR 性能)",
+        "(site:openai.com OR site:anthropic.com OR site:deepmind.google OR site:ai.meta.com OR site:mistral.ai) (model OR 模型)",
+        "(大模型 OR 推理模型) 中国 (通义千问 OR DeepSeek OR 智谱 OR MiniMax) (发布 OR 开源 OR API OR 评测)",
+        "(大模型 OR 生成式人工智能) 中国 (备案 OR 监管 OR 标准 OR 算力 OR 招标 OR 采购)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "metaverse": {
+    "name": "元宇宙",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "元宇宙",
+      "空间计算",
+      "XR",
+      "AR",
+      "VR",
+      "mixed reality",
+      "spatial computing",
+      "OpenXR",
+      "WebXR"
+    ],
+    "exclude_keywords": [
+      "币价",
+      "炒币",
+      "空投领取",
+      "链游打金",
+      "虚拟币荐股",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "apple-vision-pro-news",
+        "publisher": "Apple Vision Pro News",
+        "url": "https://www.apple.com/newsroom/topics/apple-vision-pro/",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "meta-quest-blog",
+        "publisher": "Meta Quest Blog",
+        "url": "https://www.meta.com/blog/quest/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "khronos-news-xr",
+        "publisher": "Khronos News",
+        "url": "https://www.khronos.org/news/",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "openxr-sdk-releases",
+        "publisher": "OpenXR SDK Releases",
+        "url": "https://github.com/KhronosGroup/OpenXR-SDK/releases.atom",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "webxr-spec-updates",
+        "publisher": "WebXR Specification Updates",
+        "url": "https://github.com/immersive-web/webxr/commits/main.atom",
+        "source_type": "official",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "metaverse-xreal-cn",
+        "publisher": "XREAL 新闻",
+        "url": "https://www.xreal.com/cn/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "metaverse-rokid-cn",
+        "publisher": "Rokid 新闻",
+        "url": "https://www.rokid.com/zh-CN/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "metaverse-pico-cn",
+        "publisher": "PICO OS 更新",
+        "url": "https://www.picoxr.com/cn/software/pico-os",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -币价 -炒币 -空投",
+        "(空间计算 OR \"spatial computing\" OR XR) (产品 OR 发布 OR 设备 OR 平台 OR 融资)",
+        "(AR OR VR OR \"mixed reality\") (headset OR glasses OR launch OR update)",
+        "(OpenXR OR WebXR) (release OR specification OR runtime OR standard)",
+        "(Vision Pro OR Meta Quest OR Android XR) (app OR platform OR developer OR sales)",
+        "(site:apple.com/newsroom OR site:meta.com/blog/quest OR site:khronos.org OR site:developers.googleblog.com) (XR OR VR OR spatial)",
+        "(XR OR AR眼镜 OR 空间计算) 中国 (XREAL OR Rokid OR PICO) (发布 OR 量产 OR 融资 OR 合作)",
+        "(XR OR 元宇宙 OR 空间计算) 中国 (政策 OR 标准 OR 文旅 OR 工业 OR 教育 OR 产业园)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "autonomous": {
+    "name": "自动驾驶",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "自动驾驶",
+      "Robotaxi",
+      "无人驾驶",
+      "智驾",
+      "autonomous driving",
+      "self-driving",
+      "端到端驾驶",
+      "ADAS",
+      "城市NOA",
+      "量产落地"
+    ],
+    "exclude_keywords": [
+      "二手车促销",
+      "驾校招生",
+      "车险报价",
+      "汽车改装教程",
+      "司机招聘",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "waymo-blog",
+        "publisher": "Waymo Blog",
+        "url": "https://waymo.com/blog/",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "mobileye-news",
+        "publisher": "Mobileye News",
+        "url": "https://www.mobileye.com/news/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "apollo-releases",
+        "publisher": "Baidu Apollo Releases",
+        "url": "https://github.com/ApolloAuto/apollo/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "autoware-releases",
+        "publisher": "Autoware Releases",
+        "url": "https://github.com/autowarefoundation/autoware/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "nvidia-autonomous-blog",
+        "publisher": "NVIDIA Technical Blog",
+        "url": "https://developer.nvidia.com/blog/feed/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "autonomous-xpeng-cn",
+        "publisher": "小鹏汽车新闻",
+        "url": "https://www.xiaopeng.com/news",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "autonomous-weride-cn",
+        "publisher": "文远知行新闻",
+        "url": "https://www.weride.ai/zh/press",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "autonomous-pony-cn",
+        "publisher": "小马智行新闻",
+        "url": "https://pony.ai/press?lang=zh",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"二手车\" -驾校 -车险",
+        "(自动驾驶 OR 智驾 OR 无人驾驶) (发布 OR 量产 OR 交付 OR 融资 OR 合作)",
+        "(Robotaxi OR \"self-driving\") (deployment OR permit OR safety OR expansion)",
+        "(\"end-to-end driving\" OR 端到端驾驶 OR VLA) (model OR benchmark OR dataset)",
+        "(ADAS OR 城市NOA) (production OR OTA OR regulation OR 量产)",
+        "(site:waymo.com OR site:mobileye.com OR site:apollo.auto OR site:developer.nvidia.com OR site:autoware.org) (autonomous OR Robotaxi OR 自动驾驶)",
+        "(自动驾驶 OR Robotaxi OR 城市NOA) 中国 (小鹏 OR 文远知行 OR 小马智行 OR 百度Apollo) (量产 OR 运营 OR 获批)",
+        "(自动驾驶 OR 智驾) 中国 (法规 OR 标准 OR 路测牌照 OR 准入 OR 召回 OR 安全事故)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "biotech": {
+    "name": "AI 生命科学",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "AI 生命科学",
+      "AI 制药",
+      "AlphaFold",
+      "生物计算",
+      "AI drug discovery",
+      "protein design",
+      "foundation model biology",
+      "基因组学",
+      "临床验证"
+    ],
+    "exclude_keywords": [
+      "保健品促销",
+      "减肥药购买",
+      "养生秘方",
+      "股票推荐",
+      "医美广告",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "isomorphic-labs-news",
+        "publisher": "Isomorphic Labs News",
+        "url": "https://www.isomorphiclabs.com/news",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "recursion-news",
+        "publisher": "Recursion News",
+        "url": "https://www.recursion.com/news",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "deepmind-science-news",
+        "publisher": "Google DeepMind News",
+        "url": "https://deepmind.google/discover/blog/",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "alphafold-releases",
+        "publisher": "AlphaFold Releases",
+        "url": "https://github.com/google-deepmind/alphafold/releases.atom",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "bionemo-releases",
+        "publisher": "NVIDIA BioNeMo Releases",
+        "url": "https://github.com/NVIDIA/bionemo-framework/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "biotech-xtalpi-cn",
+        "publisher": "晶泰科技新闻",
+        "url": "https://www.xtalpi.com/category/news/",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "biotech-insilico-cn",
+        "publisher": "英矽智能新闻",
+        "url": "https://insilico.com/news_sc",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "biotech-dptech-cn",
+        "publisher": "深势科技动态",
+        "url": "https://www.dp.tech/about",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -保健品 -养生 -\"股票推荐\"",
+        "(\"AI drug discovery\" OR AI制药 OR \"generative chemistry\") (partnership OR funding OR trial OR platform)",
+        "(AlphaFold OR \"protein design\" OR \"protein language model\") (release OR research OR database)",
+        "(\"foundation model\" AND biology) OR (生物大模型 AND 发布)",
+        "(genomics OR 基因组学 OR \"single-cell\") (AI OR model OR machine learning)",
+        "(site:isomorphiclabs.com OR site:recursion.com OR site:deepmind.google OR site:nvidia.com) (drug OR protein OR biology OR 药物)",
+        "(AI制药 OR AI生命科学 OR 蛋白质设计) 中国 (晶泰科技 OR 英矽智能 OR 深势科技) (合作 OR 临床 OR 发布 OR 融资)",
+        "(AI制药 OR 生物计算) 中国 (监管 OR 临床试验 OR 药监 OR 专利 OR 产业政策 OR 投融资)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "chip": {
+    "name": "AI 芯片",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "AI 芯片",
+      "GPU",
+      "NPU",
+      "AI accelerator",
+      "算力",
+      "半导体",
+      "HBM",
+      "先进封装",
+      "AI inference",
+      "数据中心芯片"
+    ],
+    "exclude_keywords": [
+      "显卡二手交易",
+      "装机推荐",
+      "游戏帧率",
+      "挖矿教程",
+      "驱动下载站",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "nvidia-blog",
+        "publisher": "NVIDIA Blog",
+        "url": "https://blogs.nvidia.com/feed/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "amd-newsroom",
+        "publisher": "AMD Newsroom",
+        "url": "https://www.amd.com/en/newsroom.html",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "intel-newsroom",
+        "publisher": "Intel Newsroom",
+        "url": "https://newsroom.intel.com/news",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "rocm-releases",
+        "publisher": "AMD ROCm Releases",
+        "url": "https://github.com/ROCm/ROCm/releases.atom",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "tensorrt-releases",
+        "publisher": "NVIDIA TensorRT Releases",
+        "url": "https://github.com/NVIDIA/TensorRT/releases.atom",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "chip-mthreads-cn",
+        "publisher": "摩尔线程新闻",
+        "url": "https://www.mthreads.com/news",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "chip-cambricon-cn",
+        "publisher": "寒武纪开发者资讯",
+        "url": "https://developer.cambricon.com/index/article/index",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "chip-biren-cn",
+        "publisher": "壁仞科技新闻",
+        "url": "https://www.birentech.com/news/",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"二手显卡\" -装机 -挖矿",
+        "(\"AI chip\" OR AI芯片 OR GPU OR NPU) (launch OR 发布 OR 量产 OR benchmark)",
+        "(NVIDIA OR AMD OR Intel) (accelerator OR GPU OR AI infrastructure OR inference)",
+        "(HBM OR 先进封装 OR chiplet OR interconnect) (AI OR data center OR 算力)",
+        "(\"AI inference\" OR 推理芯片) (performance OR cost OR power OR 性能)",
+        "(site:nvidia.com OR site:amd.com OR site:intel.com OR site:developer.nvidia.com) (GPU OR accelerator OR AI chip)",
+        "(AI芯片 OR GPU OR NPU) 中国 (摩尔线程 OR 寒武纪 OR 壁仞科技 OR 沐曦) (发布 OR 量产 OR 适配 OR 融资)",
+        "(AI芯片 OR 半导体 OR HBM OR 先进封装) 中国 (政策 OR 出口管制 OR 招标 OR 国产替代 OR 供应链)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "multimodal": {
+    "name": "多模态 AI",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "多模态 AI",
+      "multimodal model",
+      "视频生成",
+      "图文理解",
+      "语音模型",
+      "视觉语言模型",
+      "VLM",
+      "image generation",
+      "video model",
+      "audio model"
+    ],
+    "exclude_keywords": [
+      "写真教程",
+      "换脸软件",
+      "破解下载",
+      "提示词大全",
+      "课程促销",
+      "培训招生"
+    ],
+    "sources": [
+      {
+        "id": "openai-news-multimodal",
+        "publisher": "OpenAI News",
+        "url": "https://openai.com/news/rss.xml",
+        "source_type": "official",
+        "reliability": 0.96,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "deepmind-news-multimodal",
+        "publisher": "Google DeepMind News",
+        "url": "https://deepmind.google/discover/blog/",
+        "source_type": "official",
+        "reliability": 0.95,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "meta-ai-blog-multimodal",
+        "publisher": "AI at Meta Blog",
+        "url": "https://ai.meta.com/blog/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "runway-news",
+        "publisher": "Runway News",
+        "url": "https://runwayml.com/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "stability-ai-news",
+        "publisher": "Stability AI News",
+        "url": "https://stability.ai/news-updates",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "elevenlabs-research",
+        "publisher": "ElevenLabs Research",
+        "url": "https://elevenlabs.io/blog/category/research",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "multimodal-qwen-cn",
+        "publisher": "通义千问博客",
+        "url": "https://qwen.ai/blog/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "multimodal-zhipu-cn",
+        "publisher": "智谱 AI 新闻",
+        "url": "https://www.zhipuai.cn/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "multimodal-minimax-cn",
+        "publisher": "MiniMax 新闻",
+        "url": "https://www.minimaxi.com/news",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -教程 -写真 -\"换脸软件\"",
+        "(\"multimodal model\" OR 多模态模型 OR VLM) (release OR benchmark OR API OR 发布)",
+        "(\"video generation\" OR 视频生成 OR \"world model\") (model OR launch OR update)",
+        "(\"image generation\" OR 图像生成 OR \"image editing\") (model OR release OR benchmark)",
+        "(\"speech model\" OR \"audio model\" OR 语音模型) (TTS OR ASR OR dubbing OR release)",
+        "(site:openai.com OR site:deepmind.google OR site:ai.meta.com OR site:runwayml.com OR site:stability.ai OR site:elevenlabs.io) (multimodal OR video OR image OR audio)",
+        "(多模态模型 OR 视频生成 OR VLM) 中国 (通义千问 OR 智谱 OR MiniMax OR 可灵) (发布 OR API OR 开源 OR 评测)",
+        "(多模态AI OR 生成式人工智能) 中国 (备案 OR 版权 OR 内容标识 OR 监管 OR 行业标准)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "open-source": {
+    "name": "开源模型",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "开源模型",
+      "Open Source AI",
+      "open weights",
+      "Llama",
+      "Mistral",
+      "Hugging Face",
+      "模型许可证",
+      "Transformers",
+      "vLLM"
+    ],
+    "exclude_keywords": [
+      "模型盗版下载",
+      "夸克网盘",
+      "百度网盘",
+      "一键整合包",
+      "账号共享",
+      "课程促销"
+    ],
+    "sources": [
+      {
+        "id": "github-generative-ai-open-source",
+        "publisher": "GitHub Blog · Generative AI",
+        "url": "https://github.blog/ai-and-ml/generative-ai/feed/",
+        "source_type": "industry",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "hugging-face-blog-open-source",
+        "publisher": "Hugging Face Blog",
+        "url": "https://huggingface.co/blog/feed.xml",
+        "source_type": "industry",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "meta-ai-blog-open-source",
+        "publisher": "AI at Meta Blog",
+        "url": "https://ai.meta.com/blog/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "mistral-news-open-source",
+        "publisher": "Mistral AI News",
+        "url": "https://mistral.ai/news/",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "transformers-releases",
+        "publisher": "Hugging Face Transformers Releases",
+        "url": "https://github.com/huggingface/transformers/releases.atom",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "vllm-releases",
+        "publisher": "vLLM Releases",
+        "url": "https://github.com/vllm-project/vllm/releases.atom",
+        "source_type": "official",
+        "reliability": 0.89,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "open-source-qwen-cn",
+        "publisher": "通义千问博客",
+        "url": "https://qwen.ai/blog/",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "open-source-deepseek-cn",
+        "publisher": "DeepSeek 更新日志",
+        "url": "https://api-docs.deepseek.com/zh-cn/updates",
+        "source_type": "official",
+        "reliability": 0.94,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "open-source-modelscope-cn",
+        "publisher": "魔搭社区",
+        "url": "https://community.modelscope.cn/",
+        "source_type": "community",
+        "reliability": 0.84,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"网盘\" -\"整合包\" -\"账号共享\"",
+        "(\"open source AI\" OR \"open weights\" OR 开源模型) (release OR 发布 OR license OR 许可证)",
+        "(Llama OR Mistral OR Qwen OR DeepSeek OR Gemma) (open OR release OR model)",
+        "(Hugging Face OR Transformers OR vLLM) (release OR update OR ecosystem)",
+        "(\"model license\" OR 模型许可证 OR Apache OR MIT) (AI OR model OR weights)",
+        "(site:huggingface.co OR site:ai.meta.com OR site:mistral.ai OR site:github.com/huggingface OR site:github.com/vllm-project) (model OR release OR open)",
+        "(开源模型 OR \"open weights\") 中国 (通义千问 OR DeepSeek OR 魔搭) (发布 OR 许可证 OR 权重 OR 生态)",
+        "(开源模型 OR 模型许可证) 中国 (国产算力 OR 适配 OR 商用 OR 合规 OR 社区治理)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  },
+  "game-dev": {
+    "name": "游戏研发",
+    "source_groups": ["cross-industry-intelligence"],
+    "keywords": [
+      "游戏引擎",
+      "Unreal Engine",
+      "Unity",
+      "Godot",
+      "Bevy",
+      "游戏开发",
+      "实时渲染",
+      "技术美术",
+      "开发工具链"
+    ],
+    "exclude_keywords": [
+      "游戏下载",
+      "破解版",
+      "礼包码",
+      "手游推荐",
+      "抽奖活动",
+      "课程招生"
+    ],
+    "sources": [
+      {
+        "id": "unreal-engine-news",
+        "publisher": "Unreal Engine News",
+        "url": "https://www.unrealengine.com/en-US/rss",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "godot-engine-news",
+        "publisher": "Godot Engine News",
+        "url": "https://godotengine.org/rss.xml",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "unity-blog",
+        "publisher": "Unity Blog",
+        "url": "https://unity.com/blog",
+        "source_type": "official",
+        "reliability": 0.93,
+        "language": "en",
+        "region": "global",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "godot-releases",
+        "publisher": "Godot Engine Releases",
+        "url": "https://github.com/godotengine/godot/releases.atom",
+        "source_type": "official",
+        "reliability": 0.92,
+        "language": "en",
+        "region": "global",
+        "tier": "core"
+      },
+      {
+        "id": "bevy-releases",
+        "publisher": "Bevy Engine Releases",
+        "url": "https://github.com/bevyengine/bevy/releases.atom",
+        "source_type": "official",
+        "reliability": 0.88,
+        "language": "en",
+        "region": "global",
+        "tier": "industry"
+      },
+      {
+        "id": "game-dev-cocos-cn",
+        "publisher": "Cocos 官方资讯",
+        "url": "https://www.cocos.com/information",
+        "source_type": "official",
+        "reliability": 0.91,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "game-dev-tencent-institute-cn",
+        "publisher": "腾讯游戏学堂",
+        "url": "https://gameinstitute.tencent.com/",
+        "source_type": "official",
+        "reliability": 0.9,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "core",
+        "collection_mode": "webpage"
+      },
+      {
+        "id": "game-dev-uwa-cn",
+        "publisher": "UWA 技术博客",
+        "url": "https://blog.uwa4d.com/",
+        "source_type": "industry",
+        "reliability": 0.86,
+        "language": "zh-CN",
+        "region": "CN",
+        "tier": "industry",
+        "collection_mode": "webpage"
+      }
+    ],
+    "web_search": {
+      "enabled": true,
+      "provider": "google_news_rss",
+      "query_templates": [
+        "{query} -\"游戏下载\" -破解版 -礼包码",
+        "(\"game engine\" OR 游戏引擎) (release OR roadmap OR update OR 发布)",
+        "(Unreal Engine OR Unity OR Godot OR Bevy) (version OR tooling OR rendering OR release)",
+        "(\"game development\" OR 游戏研发) (pipeline OR production OR studio OR 技术)",
+        "(\"real-time rendering\" OR 实时渲染 OR \"technical art\") (engine OR tool OR workflow)",
+        "(site:unrealengine.com OR site:unity.com/blog OR site:godotengine.org OR site:github.com/godotengine OR site:github.com/bevyengine) (engine OR release OR developer)",
+        "(游戏开发 OR 游戏引擎) 中国 (Cocos OR 腾讯游戏学堂 OR UWA) (发布 OR 技术 OR 工具链 OR 案例)",
+        "(游戏研发 OR 游戏引擎) 中国 (版号 OR 监管 OR 出海 OR 产业政策 OR 投融资 OR 国产化)"
+      ],
+      "max_queries": 8,
+      "language": "zh-CN",
+      "region": "CN",
+      "edition": "CN:zh-Hans",
+      "reliability": 0.72
+    }
+  }
+}

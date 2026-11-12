@@ -1,0 +1,35 @@
+{
+  "name": "signal-radar-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Web client for the industry news brief.",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "lan": "bash ../scripts/start-lan.sh",
+    "test": "npm run build && node --test ../test/client/*.test.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next && npm run lint:design-grid",
+    "lint:design-grid": "node --test ../test/client/design-grid.test.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3"
+  },
+  "type": "module"
+}
