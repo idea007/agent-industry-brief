@@ -45,6 +45,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             api_key=configured.content_ai_api_key,
             model=configured.content_ai_model,
             fallback_models=configured.content_ai_fallback_models,
+            reasoning_effort=configured.content_ai_reasoning_effort,
             timeout_seconds=configured.model_timeout_seconds,
             max_retries=configured.model_max_retries,
         )

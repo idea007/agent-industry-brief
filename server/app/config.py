@@ -59,6 +59,7 @@ class Settings:
     content_ai_api_key: str | None = None
     content_ai_model: str = "deepseek-v4-pro"
     content_ai_fallback_models: tuple[str, ...] = ("deepseek-v4-flash",)
+    content_ai_reasoning_effort: str | None = None
     model_timeout_seconds: float = 45
     model_max_retries: int = 1
     source_mode: str = "rss"
@@ -177,6 +178,9 @@ class Settings:
                 else os.getenv("CONTENT_AI_MODEL", default_model).strip()
             ),
             content_ai_fallback_models=fallback_models,
+            content_ai_reasoning_effort=(
+                os.getenv("CONTENT_AI_REASONING_EFFORT", "").strip() or None
+            ),
             model_timeout_seconds=float(
                 os.getenv("INTEL_RADAR_MODEL_TIMEOUT_SECONDS", "45")
             ),

@@ -151,6 +151,30 @@ INTEL_RADAR_SCHEDULER_ENABLED=false \
 
 Health 和运行配置不会返回 API Key。
 
+### 通过 Model Dock 使用本机 Codex
+
+在同一台机器上启动 [Model Dock](https://github.com/idea007/model-dock)，添加已登录的 Codex，
+发现并启用模型，将模型绑定到 `industry-brief` 别名，再创建只授权该别名的项目密钥。
+在仓库根目录的 `.env` 中设置以下值，填入项目密钥后重启服务端。
+
+```dotenv
+CONTENT_AI_PROVIDER=model-dock-codex
+CONTENT_AI_BASE_URL=http://127.0.0.1:4317/v1
+CONTENT_AI_API_KEY=
+CONTENT_AI_MODEL=industry-brief
+CONTENT_AI_FALLBACK_MODELS=
+CONTENT_AI_REASONING_EFFORT=low
+INTEL_RADAR_MODEL_MODE=real
+INTEL_RADAR_SOURCE_MODE=rss
+INTEL_RADAR_MODEL_TIMEOUT_SECONDS=240
+INTEL_RADAR_MODEL_MAX_RETRIES=0
+INTEL_RADAR_MAX_CONCURRENT_RUNS=1
+```
+
+推理强度可留空以沿用模型默认值，或填写 Model Dock 模型目录支持的值。Codex 同时只处理一个
+模型请求，本项目将后续扫描排队。服务端通过回环地址调用网关，Codex 的外网连接由 Model Dock
+管理。macOS 上，网关在未显式设置代理时会在启动 Codex 子进程时读取系统的本机代理。
+
 ## 启动客户端
 
 打开另一个终端：

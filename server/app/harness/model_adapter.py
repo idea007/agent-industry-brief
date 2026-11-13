@@ -27,6 +27,7 @@ from app.domain.models import (
     Subscription,
     ToolCallIntent,
 )
+from app.harness.result_schema import RESEARCH_RESULT_SCHEMA
 
 
 class ModelAdapterError(RuntimeError):
@@ -82,6 +83,7 @@ class OpenAICompatibleResearchModelAdapter:
         api_key: str,
         model: str,
         fallback_models: tuple[str, ...] = (),
+        reasoning_effort: str | None = None,
         timeout_seconds: float = 45,
         max_retries: int = 2,
         client: httpx.AsyncClient | None = None,
@@ -89,6 +91,7 @@ class OpenAICompatibleResearchModelAdapter:
         self.provider = provider
         self.base_url = base_url.rstrip("/")
         self.model = model
+        self.reasoning_effort = reasoning_effort
         self.fallback_models = tuple(
             candidate
             for candidate in fallback_models
@@ -98,6 +101,7 @@ class OpenAICompatibleResearchModelAdapter:
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(
             timeout=httpx.Timeout(timeout_seconds),
+            trust_env=provider != "model-dock-codex",
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
@@ -124,9 +128,13 @@ class OpenAICompatibleResearchModelAdapter:
                 observations,
                 final_step=final_step,
             ),
-            "max_tokens": 6000 if final_step else 1200,
-            "temperature": 0.1,
         }
+        if self.provider == "model-dock-codex":
+            if self.reasoning_effort:
+                payload["reasoning_effort"] = self.reasoning_effort
+        else:
+            payload["max_tokens"] = 6000 if final_step else 1200
+            payload["temperature"] = 0.1
         if self.provider == "deepseek":
             payload["thinking"] = {"type": "disabled"}
         if tool_definitions:
@@ -140,6 +148,15 @@ class OpenAICompatibleResearchModelAdapter:
                 }
             else:
                 payload["tool_choice"] = "auto"
+        elif self.provider == "model-dock-codex":
+            payload["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "industry_brief",
+                    "strict": True,
+                    "schema": RESEARCH_RESULT_SCHEMA,
+                },
+            }
         else:
             payload["response_format"] = {"type": "json_object"}
 
@@ -424,6 +441,13 @@ class OpenAICompatibleResearchModelAdapter:
                 "minimum_importance 的事件。应覆盖证据支持的不同合格事件，"
                 "不要把多条独立变化压缩成少数总览；没有合格资料时返回空 items。"
             )
+            if self.provider == "model-dock-codex":
+                instruction += (
+                    "先选出可逐字定位的原文引文，再写每条 fact.text。每条事实只写"
+                    "引文直接支持的一项内容，并保留引文中的专名、版本、数字和单位。"
+                    "引用非中文来源时，fact.text 优先保留能独立表达该事实的原文短句。"
+                    "标题和摘要使用中文，摘要中的数字和单位与原文一致。"
+                )
         else:
             instruction = (
                 "调用当前可见的工具继续研究。"

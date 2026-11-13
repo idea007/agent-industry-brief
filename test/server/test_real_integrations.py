@@ -1612,6 +1612,72 @@ async def test_openai_compatible_adapter_parses_tool_call(harness):
 
 
 @pytest.mark.asyncio
+async def test_model_dock_codex_uses_function_calls_and_source_quote_schema(harness):
+    _, database, registry, _ = harness
+    subscription = subscription_by_slug(database, "ai-agent")
+    run = database.create_run(
+        subscription_id=subscription.id,
+        trigger="manual",
+        goal="验证 Model Dock 调用",
+        delivery_mode="web_inbox",
+        idempotency_key=None,
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url.path == "/v1/chat/completions"
+        payload = json.loads(request.content)
+        assert payload["model"] == "industry-brief"
+        assert payload["reasoning_effort"] == "low"
+        assert {"temperature", "max_tokens", "thinking"}.isdisjoint(payload)
+        if "tools" in payload:
+            assert payload["tool_choice"] == {
+                "type": "function",
+                "function": {"name": "search_sources"},
+            }
+            message = {
+                "tool_calls": [
+                    {
+                        "function": {
+                            "name": "search_sources",
+                            "arguments": '{"query":"AI Agent"}',
+                        }
+                    }
+                ]
+            }
+        else:
+            format_spec = payload["response_format"]
+            assert format_spec["type"] == "json_schema"
+            assert format_spec["json_schema"]["strict"]
+            schema = format_spec["json_schema"]["schema"]
+            item = schema["properties"]["items"]["items"]
+            fact = item["properties"]["facts"]["items"]
+            assert "source_quotes" in fact["required"]
+            assert fact["properties"]["source_quotes"]["minItems"] == 1
+            message = {
+                "content": '{"kind":"structured_result","research_summary":"无新资料","items":[]}'
+            }
+        return httpx.Response(200, json={"choices": [{"message": message}]})
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        adapter = OpenAICompatibleResearchModelAdapter(
+            provider="model-dock-codex",
+            base_url="http://127.0.0.1:4317/v1",
+            api_key="test-project-key",
+            model="industry-brief",
+            reasoning_effort="low",
+            client=client,
+        )
+        tool = await adapter.decide(
+            run, subscription, {}, registry.model_tool_definitions(["search_sources"])
+        )
+        result = await adapter.decide(run, subscription, {}, [])
+    assert tool.intent.kind == "tool_call"
+    assert tool.intent.tool == "search_sources"
+    assert result.intent.kind == "structured_result"
+    assert result.intent.items == []
+
+
+@pytest.mark.asyncio
 async def test_content_discovery_prompt_prioritizes_content_itself(harness):
     _, database, registry, _ = harness
     subscription = database.create_subscription(
