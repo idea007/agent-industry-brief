@@ -321,39 +321,30 @@ export default function IntelDetailDialog({
     unresolvedQuestions.push("下一次实质变化会发生在什么时间，由哪一方首先披露？");
   }
   const preferenceTargetLabels = preferenceTargets(item.tags);
-  const valuableFeedbackActive = feedback.some(
-    (itemFeedback) =>
-      itemFeedback.feedback_type === "valuable" && !itemFeedback.target,
-  );
-  const notRelevantFeedbackActive = feedback.some(
-    (itemFeedback) =>
-      itemFeedback.feedback_type === "not_relevant" && !itemFeedback.target,
-  );
-  const secondaryFeedbackOptions: {
+  const feedbackOptions: {
     type: IntelFeedbackType;
     label: string;
     target?: string;
   }[] = [
+    { type: "valuable", label: "多看这类" },
+    { type: "not_relevant", label: "少看这类" },
     { type: "duplicate", label: "重复内容" },
-    ...(item.tags[0]
-      ? [
-          {
-            type: "follow_entity" as const,
-            label: `关注 ${item.tags[0]}`,
-            target: item.tags[0],
-          },
-        ]
-      : []),
-    ...(source?.publisher
-      ? [
-          {
-            type: "mute_source" as const,
-            label: `屏蔽 ${source.publisher}`,
-            target: source.publisher,
-          },
-        ]
-      : []),
   ];
+  const firstTag = item.tags[0];
+  if (firstTag) {
+    feedbackOptions.push({
+      type: "follow_entity",
+      label: `关注 ${firstTag}`,
+      target: firstTag,
+    });
+  }
+  if (source?.publisher) {
+    feedbackOptions.push({
+      type: "mute_source",
+      label: `屏蔽 ${source.publisher}`,
+      target: source.publisher,
+    });
+  }
 
   function closeFromBackdrop(event: MouseEvent<HTMLDivElement>) {
     if (event.target === event.currentTarget) onClose();
@@ -847,58 +838,29 @@ export default function IntelDetailDialog({
               <div
                 className="detail-preference-actions"
                 role="group"
-                aria-label="调整类似动态偏好"
+                aria-label="反馈操作"
               >
-                <button
-                  type="button"
-                  className={valuableFeedbackActive ? "active" : ""}
-                  aria-pressed={valuableFeedbackActive}
-                  disabled={feedbackSaving}
-                  onClick={() => onToggleFeedback("valuable")}
-                >
-                  {valuableFeedbackActive ? "✓ " : ""}多看这类
-                </button>
-                <button
-                  type="button"
-                  className={
-                    notRelevantFeedbackActive ? "active negative" : ""
-                  }
-                  aria-pressed={notRelevantFeedbackActive}
-                  disabled={feedbackSaving}
-                  onClick={() => onToggleFeedback("not_relevant")}
-                >
-                  {notRelevantFeedbackActive ? "✓ " : ""}少看这类
-                </button>
+                {feedbackOptions.map((option) => {
+                  const active = feedback.some(
+                    (itemFeedback) =>
+                      itemFeedback.feedback_type === option.type &&
+                      (itemFeedback.target ?? undefined) === option.target,
+                  );
+                  return (
+                    <button
+                      type="button"
+                      key={option.type}
+                      className={option.type === "not_relevant" ? "negative" : undefined}
+                      aria-pressed={active}
+                      disabled={feedbackSaving}
+                      onClick={() => onToggleFeedback(option.type, option.target)}
+                    >
+                      {active ? "✓ " : ""}
+                      {option.label}
+                    </button>
+                  );
+                })}
               </div>
-              {!!secondaryFeedbackOptions.length && (
-                <div className="detail-feedback-secondary">
-                  <span>其他反馈</span>
-                  <div>
-                    {secondaryFeedbackOptions.map((option) => {
-                      const active = feedback.some(
-                        (itemFeedback) =>
-                          itemFeedback.feedback_type === option.type &&
-                          (itemFeedback.target ?? undefined) === option.target,
-                      );
-                      return (
-                        <button
-                          type="button"
-                          key={`${option.type}:${option.target ?? ""}`}
-                          className={active ? "active" : ""}
-                          aria-pressed={active}
-                          disabled={feedbackSaving}
-                          onClick={() =>
-                            onToggleFeedback(option.type, option.target)
-                          }
-                        >
-                          {active ? "✓ " : ""}
-                          {option.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
               <small aria-live="polite">
                 {feedbackSaving
                   ? "正在保存反馈…"
