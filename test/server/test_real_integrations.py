@@ -1630,13 +1630,17 @@ async def test_model_dock_codex_uses_function_calls_and_source_quote_schema(harn
         assert payload["reasoning_effort"] == "low"
         assert {"temperature", "max_tokens", "thinking"}.isdisjoint(payload)
         if "tools" in payload:
+            assert payload["parallel_tool_calls"] is False
             assert payload["tool_choice"] == {
                 "type": "function",
                 "function": {"name": "search_sources"},
             }
+            finish_reason = "tool_calls"
             message = {
                 "tool_calls": [
                     {
+                        "id": "call_search",
+                        "type": "function",
                         "function": {
                             "name": "search_sources",
                             "arguments": '{"query":"AI Agent"}',
@@ -1653,10 +1657,14 @@ async def test_model_dock_codex_uses_function_calls_and_source_quote_schema(harn
             fact = item["properties"]["facts"]["items"]
             assert "source_quotes" in fact["required"]
             assert fact["properties"]["source_quotes"]["minItems"] == 1
+            finish_reason = "stop"
             message = {
                 "content": '{"kind":"structured_result","research_summary":"无新资料","items":[]}'
             }
-        return httpx.Response(200, json={"choices": [{"message": message}]})
+        return httpx.Response(
+            200,
+            json={"choices": [{"finish_reason": finish_reason, "message": message}]},
+        )
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
         adapter = OpenAICompatibleResearchModelAdapter(
@@ -1675,6 +1683,48 @@ async def test_model_dock_codex_uses_function_calls_and_source_quote_schema(harn
     assert tool.intent.tool == "search_sources"
     assert result.intent.kind == "structured_result"
     assert result.intent.items == []
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("finish_reason", "message"),
+    [
+        ("stop", {"content": None, "refusal": "Cannot process this request."}),
+        (
+            "content_filter",
+            {"content": '{"research_summary":"无新资料","items":[]}'},
+        ),
+    ],
+)
+async def test_model_dock_codex_blocks_refused_or_filtered_results(
+    harness, finish_reason, message
+):
+    _, database, _, _ = harness
+    subscription = subscription_by_slug(database, "ai-agent")
+    run = database.create_run(
+        subscription_id=subscription.id,
+        trigger="manual",
+        goal="验证网关拒绝结果处理",
+        delivery_mode="web_inbox",
+        idempotency_key=None,
+    )
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={"choices": [{"finish_reason": finish_reason, "message": message}]},
+        )
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        adapter = OpenAICompatibleResearchModelAdapter(
+            provider="model-dock-codex",
+            base_url="http://127.0.0.1:4317/v1",
+            api_key="test-project-key",
+            model="industry-brief",
+            client=client,
+        )
+        decision = await adapter.decide(run, subscription, {}, [])
+    assert decision.intent.kind == "blocked"
 
 
 @pytest.mark.asyncio
@@ -1848,7 +1898,16 @@ async def test_openai_compatible_adapter_accepts_wrapped_final_json(harness):
 
 
 @pytest.mark.asyncio
-async def test_openai_compatible_adapter_marks_truncated_json_retryable(harness):
+@pytest.mark.parametrize(
+    "content",
+    [
+        '{"kind":"structured_result","items":[',
+        '{"kind":"structured_result","research_summary":"无新资料","items":[]}',
+    ],
+)
+async def test_openai_compatible_adapter_marks_length_limited_output_retryable(
+    harness, content
+):
     _, database, registry, _ = harness
     subscription = subscription_by_slug(database, "ai-agent")
     run = database.create_run(
@@ -1869,7 +1928,7 @@ async def test_openai_compatible_adapter_marks_truncated_json_retryable(harness)
                         "finish_reason": "length",
                         "message": {
                             "role": "assistant",
-                            "content": '{"kind":"structured_result","items":[',
+                            "content": content,
                         },
                     }
                 ],

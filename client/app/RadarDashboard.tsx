@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -21,6 +22,7 @@ import RunInlineCard from "./components/RunInlineCard";
 import RunTraceDrawer from "./components/RunTraceDrawer";
 import ScanCoveragePanel from "./components/ScanCoveragePanel";
 import { groupArticlesByRun, preferenceTargets } from "./feed-view.mjs";
+import { apiUrl } from "./radar-api";
 import { initialData } from "./radar-initial";
 import {
   expandNewsArticles,
@@ -47,13 +49,8 @@ import {
   type StoryWatchCadence,
 } from "./radar-types";
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 const FOLLOWING_KEY = "signal-radar-following-v2";
 const CUSTOM_SOURCES_KEY = "signal-radar-custom-sources-v1";
-
-function apiUrl(path: string): string {
-  return `${API_BASE}${path}`;
-}
 
 type BackendCustomSource = {
   id: string;
@@ -1485,6 +1482,10 @@ export default function RadarDashboard() {
               <i aria-label={`${data.stats.pending_approval_count} 个待审批`} />
             )}
           </button>
+          <Link className="ghost-button settings-entry" href="/settings">
+            <span aria-hidden="true">⚙︎</span>
+            设置
+          </Link>
         </div>
       </aside>
 

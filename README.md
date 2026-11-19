@@ -154,14 +154,15 @@ Health 和运行配置不会返回 API Key。
 ### 通过 Model Dock 使用本机 Codex
 
 在同一台机器上启动 [Model Dock](https://github.com/idea007/model-dock)，添加已登录的 Codex，
-发现并启用模型，将模型绑定到 `industry-brief` 别名，再创建只授权该别名的项目密钥。
-在仓库根目录的 `.env` 中设置以下值，填入项目密钥后重启服务端。
+发现并发布要使用的模型，再为新闻简报创建只授权这些模型的项目密钥。模型 ID 使用目录中的
+完整值，例如 `连接ID/gpt-6-luna`。在仓库根目录的 `.env` 中填入项目密钥和默认模型 ID 后
+重启服务端。
 
 ```dotenv
 CONTENT_AI_PROVIDER=model-dock-codex
 CONTENT_AI_BASE_URL=http://127.0.0.1:4317/v1
 CONTENT_AI_API_KEY=
-CONTENT_AI_MODEL=industry-brief
+CONTENT_AI_MODEL=连接ID/gpt-6-luna
 CONTENT_AI_FALLBACK_MODELS=
 CONTENT_AI_REASONING_EFFORT=low
 INTEL_RADAR_MODEL_MODE=real
@@ -171,9 +172,17 @@ INTEL_RADAR_MODEL_MAX_RETRIES=0
 INTEL_RADAR_MAX_CONCURRENT_RUNS=1
 ```
 
-推理强度可留空以沿用模型默认值，或填写 Model Dock 模型目录支持的值。Codex 同时只处理一个
-模型请求，本项目将后续扫描排队。服务端通过回环地址调用网关，Codex 的外网连接由 Model Dock
-管理。macOS 上，网关在未显式设置代理时会在启动 Codex 子进程时读取系统的本机代理。
+项目通过 `POST /v1/chat/completions` 调用 Model Dock。研究阶段每轮交接一个函数，由项目校验并
+执行。整理阶段通过 `response_format` 使用 JSON Schema 约束最终结果，包括每条事实的原文引文。
+推理强度可留空以沿用模型默认值，或填写 Model Dock 模型目录支持的值。
+
+首页左下角的「设置」打开「功能与模型」。可以为行业扫描和故事深挖的检索、整理步骤分别
+选择当前项目密钥授权的模型，并管理模型开关和目录声明的思考深度。点击「保存更改」后，
+新扫描会使用对应的默认模型和思考深度。
+
+Codex 同时只处理一个模型请求，本项目将后续扫描排队。服务端通过回环地址调用网关，Codex 的
+外网连接由 Model Dock 管理。macOS 上，网关在未显式设置代理时会在启动 Codex 子进程时读取
+系统的本机代理。
 
 ## 启动客户端
 

@@ -215,12 +215,40 @@ class Database:
         finally:
             connection.close()
 
+    def load_model_settings(self) -> tuple[int, dict[str, Any]]:
+        with self.connect() as connection:
+            row = connection.execute(
+                "SELECT revision, config FROM model_settings WHERE id = 1"
+            ).fetchone()
+        if row is None:
+            return 0, {}
+        return row["revision"], json.loads(row["config"])
+
+    def save_model_settings(self, revision: int, config: dict[str, Any]) -> bool:
+        with self.connect() as connection:
+            connection.execute(
+                "INSERT OR IGNORE INTO model_settings VALUES (1, 0, '{}')"
+            )
+            updated = connection.execute(
+                "UPDATE model_settings SET revision = revision + 1, config = ? "
+                "WHERE id = 1 AND revision = ?",
+                (json.dumps(config, ensure_ascii=False), revision),
+            )
+            return updated.rowcount == 1
+
     def initialize(self) -> None:
         statements = [
             """
             CREATE TABLE IF NOT EXISTS data_migrations (
                 name TEXT PRIMARY KEY,
                 applied_at TEXT NOT NULL
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS model_settings (
+                id INTEGER PRIMARY KEY CHECK (id = 1),
+                revision INTEGER NOT NULL,
+                config TEXT NOT NULL
             )
             """,
             """

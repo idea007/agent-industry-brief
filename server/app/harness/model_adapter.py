@@ -4,6 +4,7 @@ import asyncio
 import json
 import re
 from collections import defaultdict
+from copy import copy
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Protocol
@@ -27,6 +28,7 @@ from app.domain.models import (
     Subscription,
     ToolCallIntent,
 )
+from app.harness.model_settings import ModelConfiguration, ModelSettings
 from app.harness.result_schema import RESEARCH_RESULT_SCHEMA
 
 
@@ -87,6 +89,7 @@ class OpenAICompatibleResearchModelAdapter:
         timeout_seconds: float = 45,
         max_retries: int = 2,
         client: httpx.AsyncClient | None = None,
+        model_settings: ModelSettings | None = None,
     ):
         self.provider = provider
         self.base_url = base_url.rstrip("/")
@@ -98,6 +101,10 @@ class OpenAICompatibleResearchModelAdapter:
             if candidate and candidate != model
         )
         self.max_retries = max(0, max_retries)
+        self._model_settings = model_settings
+        self._configuration: ModelConfiguration | None = None
+        self._catalog: dict[str, dict[str, Any]] = {}
+        self._catalog_error = ""
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(
             timeout=httpx.Timeout(timeout_seconds),
@@ -112,6 +119,23 @@ class OpenAICompatibleResearchModelAdapter:
     def actor_id(self) -> str:
         return f"{self.provider}:{self.model}"
 
+    async def for_run(self) -> OpenAICompatibleResearchModelAdapter:
+        if self._model_settings is None:
+            return self
+        configuration = await self._model_settings.for_run()
+        if configuration is None:
+            return self
+        adapter = copy(self)
+        adapter._configuration = configuration
+        adapter._catalog = self._model_settings.catalog
+        adapter._catalog_error = self._model_settings.catalog_error
+        disabled = {model.id for model in configuration.models if not model.enabled}
+        adapter.fallback_models = tuple(
+            candidate for candidate in self.fallback_models if candidate not in disabled
+        )
+        adapter._owns_client = False
+        return adapter
+
     async def decide(
         self,
         run: Run,
@@ -120,8 +144,23 @@ class OpenAICompatibleResearchModelAdapter:
         tool_definitions: list[dict[str, Any]],
     ) -> ModelDecision:
         final_step = not tool_definitions
+        selection = None
+        if self._model_settings is not None and self._configuration is not None:
+            try:
+                selection = self._model_settings.resolve(
+                    self._configuration,
+                    self._catalog,
+                    self._catalog_error,
+                    research_mode=run.research_mode,
+                    final_step=final_step,
+                )
+            except ValueError as exc:
+                raise ModelAdapterError("MODEL_CONFIGURATION_ERROR", str(exc)) from exc
+        model_id = selection.id if selection else self.model
+        effort = selection.reasoning_effort if selection else self.reasoning_effort
+        ollama = selection is not None and selection.source_type == "ollama"
         payload: dict[str, Any] = {
-            "model": self.model,
+            "model": model_id,
             "messages": self._messages(
                 run,
                 subscription,
@@ -130,8 +169,8 @@ class OpenAICompatibleResearchModelAdapter:
             ),
         }
         if self.provider == "model-dock-codex":
-            if self.reasoning_effort:
-                payload["reasoning_effort"] = self.reasoning_effort
+            if effort:
+                payload["reasoning_effort"] = effort
         else:
             payload["max_tokens"] = 6000 if final_step else 1200
             payload["temperature"] = 0.1
@@ -139,7 +178,9 @@ class OpenAICompatibleResearchModelAdapter:
             payload["thinking"] = {"type": "disabled"}
         if tool_definitions:
             payload["tools"] = tool_definitions
-            if len(tool_definitions) == 1:
+            if self.provider == "model-dock-codex":
+                payload["parallel_tool_calls"] = False
+            if len(tool_definitions) == 1 and not ollama:
                 payload["tool_choice"] = {
                     "type": "function",
                     "function": {
@@ -153,14 +194,16 @@ class OpenAICompatibleResearchModelAdapter:
                 "type": "json_schema",
                 "json_schema": {
                     "name": "industry_brief",
-                    "strict": True,
+                    "strict": not ollama,
                     "schema": RESEARCH_RESULT_SCHEMA,
                 },
             }
         else:
             payload["response_format"] = {"type": "json_object"}
 
-        body = await self._post_with_model_fallback(payload)
+        body = await self._post_with_model_fallback(
+            payload, allow_fallback=selection is None
+        )
         choices = body.get("choices") or []
         if not choices:
             raise ModelAdapterError(
@@ -168,27 +211,25 @@ class OpenAICompatibleResearchModelAdapter:
                 "模型没有返回可用的 choice",
                 retryable=True,
             )
-        message = choices[0].get("message") or {}
+        choice = choices[0]
+        message = choice.get("message") or {}
+        finish_reason = choice.get("finish_reason")
         usage = body.get("usage") or {}
-        try:
+        intent: ModelIntent
+        if message.get("refusal") or finish_reason == "content_filter":
+            intent = BlockedIntent(reason="模型服务拒绝或过滤了当前请求")
+        elif finish_reason in ("length", "max_tokens"):
+            raise ModelAdapterError(
+                "MODEL_OUTPUT_TRUNCATED",
+                "模型输出因长度限制未完成",
+                retryable=True,
+            )
+        else:
             intent = self._intent_from_message(message, final_step=final_step)
-        except ModelAdapterError as exc:
-            finish_reason = str(choices[0].get("finish_reason") or "")
-            if (
-                final_step
-                and finish_reason in {"length", "max_tokens"}
-                and exc.code == "MODEL_INVALID_JSON"
-            ):
-                raise ModelAdapterError(
-                    "MODEL_OUTPUT_TRUNCATED",
-                    "模型最终输出因长度限制未完成",
-                    retryable=True,
-                ) from exc
-            raise
         return ModelDecision(
             intent=intent,
             provider=self.provider,
-            model=str(body.get("model") or self.model),
+            model=str(body.get("model") or model_id),
             input_tokens=int(usage.get("prompt_tokens") or 0),
             output_tokens=int(usage.get("completion_tokens") or 0),
         )
@@ -198,10 +239,11 @@ class OpenAICompatibleResearchModelAdapter:
             await self._client.aclose()
 
     async def _post_with_model_fallback(
-        self, payload: dict[str, Any]
+        self, payload: dict[str, Any], *, allow_fallback: bool
     ) -> dict[str, Any]:
         last_error: ModelAdapterError | None = None
-        for candidate in (self.model, *self.fallback_models):
+        fallbacks = self.fallback_models if allow_fallback else ()
+        for candidate in (payload["model"], *fallbacks):
             candidate_payload = {**payload, "model": candidate}
             try:
                 return await self._post(candidate_payload)

@@ -477,15 +477,25 @@ a:focus-visible {
   border-top: 1px solid var(--border);
 }
 
-.sidebar-actions > button {
+.sidebar-actions > :is(button, a) {
   min-width: 0;
   min-height: 44px;
   justify-content: flex-start;
   text-align: left;
 }
 
-.sidebar-actions > button:hover {
+.sidebar-actions > :is(button, a):hover {
   background: var(--background);
+}
+
+.settings-entry {
+  gap: 8px;
+  text-decoration: none;
+}
+
+.settings-entry > span {
+  font-size: 16px;
+  line-height: 1;
 }
 
 .sidebar-actions .source-strategy-button {
@@ -7702,7 +7712,7 @@ a:focus-visible {
   }
 
   .sidebar-actions {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     padding-top: 4px;
     border-top: 0;
   }

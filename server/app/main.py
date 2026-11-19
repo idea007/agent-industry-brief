@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.model_settings import router as model_settings_router
 from app.api.routes import router
 from app.config import Settings
 from app.harness.evals import EvalRunner
@@ -12,6 +13,7 @@ from app.harness.model_adapter import (
     MockResearchModelAdapter,
     OpenAICompatibleResearchModelAdapter,
 )
+from app.harness.model_settings import ModelSettings
 from app.harness.policy import ToolPolicy
 from app.harness.runtime import AgentRuntime
 from app.harness.tools import ToolRegistry
@@ -22,6 +24,7 @@ from app.scheduler import RunScheduler
 def create_app(settings: Settings | None = None) -> FastAPI:
     configured = settings or Settings.from_env()
     database = Database(configured.database_path)
+    model_settings = ModelSettings(configured, database)
     registry = ToolRegistry(
         configured.fixture_path,
         database,
@@ -48,6 +51,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             reasoning_effort=configured.content_ai_reasoning_effort,
             timeout_seconds=configured.model_timeout_seconds,
             max_retries=configured.model_max_retries,
+            model_settings=model_settings,
         )
     else:
         model = MockResearchModelAdapter()
@@ -85,6 +89,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.runtime = runtime
         app.state.scheduler = scheduler
         app.state.settings = configured
+        app.state.model_settings = model_settings
         scheduler.start()
         try:
             yield
@@ -109,6 +114,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(router)
+    app.include_router(model_settings_router)
     return app
 
 

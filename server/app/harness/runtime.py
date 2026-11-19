@@ -19,6 +19,7 @@ from app.harness.model_adapter import (
     MockResearchModelAdapter,
     ModelAdapterError,
     ModelDecision,
+    OpenAICompatibleResearchModelAdapter,
     ResearchModelAdapter,
 )
 from app.harness.policy import ToolPolicy
@@ -212,6 +213,10 @@ class AgentRuntime:
                 actor={"type": "runtime", "id": "agent_runtime"},
             )
 
+            model = self.model
+            if isinstance(model, OpenAICompatibleResearchModelAdapter):
+                model = await model.for_run()
+
             while True:
                 await self._pause()
                 run = self._require_run(run_id)
@@ -245,7 +250,7 @@ class AgentRuntime:
                     actor={"type": "model", "id": self.model.actor_id},
                 )
                 try:
-                    decision = await self.model.decide(
+                    decision = await model.decide(
                         run,
                         subscription,
                         observations,
